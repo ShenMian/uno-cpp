@@ -12,7 +12,7 @@
 
 ```ps1
 # Build
-xmake
+xmake -y
 
 # Run (requires build first)
 xmake run
