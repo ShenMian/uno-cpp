@@ -1,6 +1,17 @@
-#include <cstdio>
+#include <SFML/Graphics.hpp>
 
 int main() {
-    std::printf("Hello, World!\n");
-    return 0;
+    auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
+    window.setFramerateLimit(144);
+
+    while (window.isOpen()) {
+        while (const auto event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) {
+                window.close();
+            }
+        }
+
+        window.clear();
+        window.display();
+    }
 }
