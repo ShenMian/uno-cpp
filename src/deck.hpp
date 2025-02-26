@@ -17,16 +17,17 @@ class Deck {
         cards_.reserve(108);
         for (const auto color :
              {Color::Red, Color::Blue, Color::Green, Color::Yellow}) {
-            cards_.push_back(std::make_unique<ColoredCard>(color, Symbol::Zero)
-            );
+            cards_.push_back(std::make_unique<NumberCard>(color, 0));
             for (uint8_t number = 1; number <= 9; number++) {
-                cards_.push_back(std::make_unique<ColoredCard>(color, number));
-                cards_.push_back(std::make_unique<ColoredCard>(color, number));
+                cards_.push_back(std::make_unique<NumberCard>(color, number));
+                cards_.push_back(std::make_unique<NumberCard>(color, number));
             }
             for (const auto symbol :
-                 {Symbol::DrawTwo, Symbol::Reverse, Symbol::Skip}) {
-                cards_.push_back(std::make_unique<ColoredCard>(color, symbol));
-                cards_.push_back(std::make_unique<ColoredCard>(color, symbol));
+                 {ActionSymbol::DrawTwo,
+                  ActionSymbol::Reverse,
+                  ActionSymbol::Skip}) {
+                cards_.push_back(std::make_unique<ActionCard>(color, symbol));
+                cards_.push_back(std::make_unique<ActionCard>(color, symbol));
             }
         }
         for (int i = 0; i < 4; i++) {
