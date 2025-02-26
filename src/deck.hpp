@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <memory>
+#include <optional>
 #include <random>
 #include <vector>
 
@@ -52,8 +53,10 @@ class Deck {
     }
 
     // Draws a card from the deck.
-    std::unique_ptr<Card> draw() {
-        assert(!cards_.empty());
+    std::optional<std::unique_ptr<Card>> draw() {
+        if (cards_.empty()) {
+            return std::nullopt;
+        }
         auto card = std::move(cards_.back());
         cards_.pop_back();
         return card;
