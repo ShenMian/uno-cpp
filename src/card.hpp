@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <optional>
+#include <stdexcept>
 
 // A UNO card.
 class Card {
@@ -79,7 +80,9 @@ class ColoredCard: public Card {
     ColoredCard(Color color, uint8_t number) :
         color_(color),
         symbol_(Symbol(number)) {
-        assert(0 <= number && number <= 9);
+        if (number < 0 || number > 9) {
+            throw std::invalid_argument("number must be between 0 and 9");
+        }
     }
 
     Color color() const {
