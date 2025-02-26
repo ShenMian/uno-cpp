@@ -54,7 +54,7 @@ class WildCard: public Card {
     WildSymbol symbol_;
 };
 
-enum class Symbol {
+enum class Symbol : uint8_t {
     // Numbers.
     Zero,
     One,
