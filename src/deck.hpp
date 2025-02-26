@@ -8,8 +8,10 @@
 
 #include "card.hpp"
 
+// A deck of UNO cards.
 class Deck {
   public:
+    // Constructs a deck with all 108 UNO cards.
     Deck() {
         cards_.reserve(108);
         for (const auto color :
@@ -44,10 +46,12 @@ class Deck {
         assert(cards_.size() == 108);
     }
 
+    // Shuffles the deck.
     void shuffle() {
         std::ranges::shuffle(cards_, std::default_random_engine {});
     }
 
+    // Draws a card from the deck.
     std::unique_ptr<Card> draw() {
         assert(!cards_.empty());
         auto card = std::move(cards_.back());

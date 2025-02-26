@@ -5,16 +5,21 @@
 #include <cstdlib>
 #include <optional>
 
-enum class Color { Red, Blue, Green, Yellow };
-
+// A UNO card.
 class Card {
+    // Returns the value of the card.
     virtual uint8_t value() const = 0;
+    // Returns the index of the card in the atlas (spritesheet).
     virtual uint8_t atlas_index() const = 0;
+    // Returns whether the card can be played on another card.
     virtual bool can_play_on(const Card& other) const = 0;
 };
 
+enum class Color { Red, Blue, Green, Yellow };
+
 enum class WildSymbol { Wild, WildDrawFour };
 
+// A wild UNO card.
 class WildCard: public Card {
   public:
     WildCard(WildSymbol symbol) : symbol_(symbol) {}
@@ -66,6 +71,7 @@ enum class Symbol {
     Skip,
 };
 
+// A number or action UNO card.
 class ColoredCard: public Card {
   public:
     ColoredCard(Color color, Symbol symbol) : color_(color), symbol_(symbol) {}
