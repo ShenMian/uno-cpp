@@ -16,9 +16,9 @@ class Card {
     virtual bool can_play_on(const Card& other) const = 0;
 };
 
-enum class Color { Red, Blue, Green, Yellow };
+enum class Color : uint8_t { Red, Blue, Green, Yellow };
 
-enum class WildSymbol { Wild, WildDrawFour };
+enum class WildSymbol : uint8_t { Wild, WildDrawFour };
 
 // A wild UNO card.
 class WildCard: public Card {
