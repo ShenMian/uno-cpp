@@ -19,24 +19,14 @@ class Deck {
              {Color::Red, Color::Blue, Color::Green, Color::Yellow}) {
             cards_.push_back(std::make_unique<ColoredCard>(color, Symbol::Zero)
             );
+            for (uint8_t number = 1; number <= 9; number++) {
+                cards_.push_back(std::make_unique<ColoredCard>(color, number));
+                cards_.push_back(std::make_unique<ColoredCard>(color, number));
+            }
             for (const auto symbol :
-                 {Symbol::One,
-                  Symbol::Two,
-                  Symbol::Three,
-                  Symbol::Four,
-                  Symbol::Five,
-                  Symbol::Six,
-                  Symbol::Seven,
-                  Symbol::Eight,
-                  Symbol::Nine,
-                  Symbol::DrawTwo,
-                  Symbol::Reverse,
-                  Symbol::Skip}) {
-                for (int i = 0; i < 2; i++) {
-                    cards_.push_back(
-                        std::make_unique<ColoredCard>(color, symbol)
-                    );
-                }
+                 {Symbol::DrawTwo, Symbol::Reverse, Symbol::Skip}) {
+                cards_.push_back(std::make_unique<ColoredCard>(color, symbol));
+                cards_.push_back(std::make_unique<ColoredCard>(color, symbol));
             }
         }
         for (int i = 0; i < 4; i++) {
