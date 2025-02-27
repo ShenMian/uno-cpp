@@ -7,6 +7,7 @@
 
 // A UNO card.
 class Card {
+  public:
     // Returns the value of the card.
     virtual uint8_t value() const = 0;
     // Returns the index of the card in the atlas (spritesheet).
