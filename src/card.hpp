@@ -15,6 +15,10 @@ class Card {
     virtual uint8_t atlas_index() const = 0;
     // Returns whether the card can be played on another card.
     virtual bool can_play_on(const Card& other) const = 0;
+
+    auto operator<=>(const Card& rhs) const {
+        return atlas_index() <=> rhs.atlas_index();
+    }
 };
 
 enum class Color : uint8_t { Red, Blue, Green, Yellow };
