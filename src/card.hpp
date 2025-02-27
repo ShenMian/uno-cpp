@@ -10,13 +10,13 @@ class Card {
   public:
     virtual ~Card() = default;
     // Returns the value of the card.
-    virtual uint8_t value() const = 0;
+    virtual uint8_t value() const noexcept = 0;
     // Returns the index of the card in the atlas (spritesheet).
-    virtual uint8_t atlas_index() const = 0;
+    virtual uint8_t atlas_index() const noexcept = 0;
     // Returns whether the card can be played on another card.
-    virtual bool can_play_on(const Card& other) const = 0;
+    virtual bool can_play_on(const Card& other) const noexcept = 0;
 
-    auto operator<=>(const Card& rhs) const {
+    auto operator<=>(const Card& rhs) const noexcept {
         return atlas_index() <=> rhs.atlas_index();
     }
 };
@@ -32,24 +32,24 @@ class NumberCard: public Card {
         }
     }
 
-    Color color() const {
+    Color color() const noexcept {
         return color_;
     }
 
-    uint8_t number() const {
+    uint8_t number() const noexcept {
         return number_;
     }
 
-    uint8_t value() const override {
+    uint8_t value() const noexcept override {
         return number_;
     }
 
-    uint8_t atlas_index() const override {
+    uint8_t atlas_index() const noexcept override {
         return static_cast<uint8_t>(color_) * 13
             + static_cast<uint8_t>(number_);
     }
 
-    bool can_play_on(const Card& other) const override;
+    bool can_play_on(const Card& other) const noexcept override;
 
   private:
     Color color_;
@@ -69,23 +69,23 @@ class ActionCard: public Card {
         color_(color),
         symbol_(symbol) {}
 
-    Color color() const {
+    Color color() const noexcept {
         return color_;
     }
 
-    ActionSymbol symbol() const {
+    ActionSymbol symbol() const noexcept {
         return symbol_;
     }
 
-    uint8_t value() const override {
+    uint8_t value() const noexcept override {
         return 20;
     }
 
-    uint8_t atlas_index() const override {
+    uint8_t atlas_index() const noexcept override {
         return 4 * 13 + static_cast<uint8_t>(symbol_);
     }
 
-    bool can_play_on(const Card& other) const override;
+    bool can_play_on(const Card& other) const noexcept override;
 
   private:
     Color color_;
@@ -99,27 +99,27 @@ class WildCard: public Card {
   public:
     WildCard(WildSymbol symbol) : symbol_(symbol) {}
 
-    std::optional<Color> color() const {
+    std::optional<Color> color() const noexcept {
         return color_;
     }
 
-    void set_color(Color color) {
+    void set_color(Color color) noexcept {
         color_ = color;
     }
 
-    WildSymbol symbol() const {
+    WildSymbol symbol() const noexcept {
         return symbol_;
     }
 
-    uint8_t value() const override {
+    uint8_t value() const noexcept override {
         return 50;
     }
 
-    uint8_t atlas_index() const override {
+    uint8_t atlas_index() const noexcept override {
         return 4 * 13 + static_cast<uint8_t>(symbol_);
     }
 
-    bool can_play_on(const Card&) const override {
+    bool can_play_on(const Card&) const noexcept override {
         return true;
     }
 

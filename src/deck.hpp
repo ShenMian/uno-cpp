@@ -44,7 +44,7 @@ class Deck {
     }
 
     // Draws a card from the deck.
-    std::optional<std::unique_ptr<Card>> draw() {
+    std::optional<std::unique_ptr<Card>> draw() noexcept {
         if (cards_.empty()) {
             return std::nullopt;
         }
