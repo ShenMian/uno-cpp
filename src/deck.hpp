@@ -39,8 +39,9 @@ class Deck {
     }
 
     // Shuffles the deck.
-    void shuffle() {
-        std::ranges::shuffle(cards_, std::default_random_engine {});
+    template<typename Rng>
+    void shuffle(Rng& rng) {
+        std::ranges::shuffle(cards_, rng);
     }
 
     // Draws a card from the deck.
