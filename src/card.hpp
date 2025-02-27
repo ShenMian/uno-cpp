@@ -82,7 +82,8 @@ class ActionCard: public Card {
     }
 
     uint8_t atlas_index() const noexcept override {
-        return 4 * 13 + static_cast<uint8_t>(symbol_);
+        return static_cast<uint8_t>(color_) * 13 + 10
+            + static_cast<uint8_t>(symbol_);
     }
 
     bool can_play_on(const Card& other) const noexcept override;
