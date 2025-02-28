@@ -37,6 +37,7 @@ class DiscardPile {
             if (i < cards_.size() - 1) {
                 sprite.setColor(DIM_COLOR);
             }
+
             render_target.draw(sprite);
         }
     }
