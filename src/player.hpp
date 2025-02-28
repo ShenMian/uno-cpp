@@ -8,6 +8,9 @@
 #include "deck.hpp"
 #include "discard_pile.hpp"
 
+using std::unique_ptr;
+using std::vector;
+
 constexpr float HORIZONTAL_SPACING = 70.0f;
 constexpr float VERTICAL_SPACING = 70.0f;
 
@@ -22,8 +25,9 @@ class Player {
         std::sort(
             cards_.begin(),
             cards_.end(),
-            [](const std::unique_ptr<Card>& lhs,
-               const std::unique_ptr<Card>& rhs) { return *lhs < *rhs; }
+            [](const unique_ptr<Card>& lhs, const unique_ptr<Card>& rhs) {
+                return *lhs < *rhs;
+            }
         );
     }
 
@@ -129,5 +133,5 @@ class Player {
     }
 
     Position position_;
-    std::vector<std::unique_ptr<Card>> cards_;
+    vector<unique_ptr<Card>> cards_;
 };

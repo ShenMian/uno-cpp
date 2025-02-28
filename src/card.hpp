@@ -6,6 +6,8 @@
 #include <optional>
 #include <stdexcept>
 
+using std::optional;
+
 // A UNO card.
 class Card {
   public:
@@ -109,7 +111,7 @@ class WildCard: public Card {
   public:
     WildCard(WildSymbol symbol) : symbol_(symbol) {}
 
-    std::optional<Color> color() const noexcept {
+    optional<Color> color() const noexcept {
         return color_;
     }
 
@@ -134,6 +136,6 @@ class WildCard: public Card {
     }
 
   private:
-    std::optional<Color> color_;
+    optional<Color> color_;
     WildSymbol symbol_;
 };

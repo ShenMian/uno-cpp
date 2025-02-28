@@ -8,13 +8,16 @@
 #include "card.hpp"
 #include "config.hpp"
 
+using std::unique_ptr;
+using std::vector;
+
 class DiscardPile {
   public:
-    void push_back(std::unique_ptr<Card> card) {
+    void push_back(unique_ptr<Card> card) {
         cards_.push_back(std::move(card));
     }
 
-    const std::vector<std::unique_ptr<Card>>& cards() const {
+    const std::vector<unique_ptr<Card>>& cards() const {
         return cards_;
     }
 
@@ -47,5 +50,5 @@ class DiscardPile {
     }
 
   private:
-    std::vector<std::unique_ptr<Card>> cards_;
+    vector<unique_ptr<Card>> cards_;
 };

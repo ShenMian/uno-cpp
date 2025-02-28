@@ -10,6 +10,10 @@
 #include "SFML/System/Vector2.hpp"
 #include "card.hpp"
 
+using std::optional;
+using std::unique_ptr;
+using std::vector;
+
 // A deck of UNO cards.
 class Deck {
   public:
@@ -46,7 +50,7 @@ class Deck {
     }
 
     // Draws a card from the deck.
-    std::optional<std::unique_ptr<Card>> draw() noexcept {
+    optional<unique_ptr<Card>> draw() noexcept {
         if (cards_.empty()) {
             return std::nullopt;
         }
@@ -66,5 +70,5 @@ class Deck {
     }
 
   private:
-    std::vector<std::unique_ptr<Card>> cards_;
+    vector<unique_ptr<Card>> cards_;
 };
