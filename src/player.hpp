@@ -39,55 +39,17 @@ class Player {
             case Position::North:
                 render_north(render_target);
                 break;
-            case Position::East:
-                render_east(render_target);
-                break;
             case Position::South:
                 render_south(render_target, discard_pile);
                 break;
+            case Position::East:
             case Position::West:
-                render_west(render_target);
+                render_vertical(render_target);
                 break;
         }
     }
 
   private:
-    void render_north(sf::RenderTarget& render_target) const {
-        for (size_t i = 0; i < cards_.size(); i += 1) {
-            auto sprite = Card::back_sprite();
-            sprite.setScale({2.0f, 2.0f});
-
-            const auto width = sprite.getGlobalBounds().size.x
-                - HORIZONTAL_SPACING + (cards_.size() - 1) * HORIZONTAL_SPACING;
-            sprite.setPosition(
-                {render_target.getSize().x / 2.0f - width / 2.0f
-                     + i * HORIZONTAL_SPACING,
-                 sprite.getGlobalBounds().size.y / 2.0f}
-            );
-
-            render_target.draw(sprite);
-        }
-    }
-
-    void render_east(sf::RenderTarget& render_target) const {
-        for (size_t i = 0; i < cards_.size(); i += 1) {
-            auto sprite = Card::back_sprite();
-            sprite.setScale({2.0f, 2.0f});
-            sprite.rotate(sf::degrees(90.0f));
-
-            const auto height = sprite.getGlobalBounds().size.x
-                - VERTICAL_SPACING + (cards_.size() - 1) * VERTICAL_SPACING;
-            sprite.setPosition(
-                {render_target.getSize().x
-                     - sprite.getGlobalBounds().size.x / 2.0f,
-                 render_target.getSize().y / 2.0f - height / 2.0f
-                     + i * VERTICAL_SPACING}
-            );
-
-            render_target.draw(sprite);
-        }
-    }
-
     void render_south(
         sf::RenderTarget& render_target,
         const DiscardPile& discard_pile
@@ -114,16 +76,48 @@ class Player {
         }
     }
 
-    void render_west(sf::RenderTarget& render_target) const {
+    void render_north(sf::RenderTarget& render_target) const {
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = Card::back_sprite();
             sprite.setScale({2.0f, 2.0f});
-            sprite.rotate(sf::degrees(-90.0f));
+
+            const auto width = sprite.getGlobalBounds().size.x
+                - HORIZONTAL_SPACING + (cards_.size() - 1) * HORIZONTAL_SPACING;
+            sprite.setPosition(
+                {render_target.getSize().x / 2.0f - width / 2.0f
+                     + i * HORIZONTAL_SPACING,
+                 sprite.getGlobalBounds().size.y / 2.0f}
+            );
+
+            render_target.draw(sprite);
+        }
+    }
+
+    void render_vertical(sf::RenderTarget& render_target) const {
+        for (size_t i = 0; i < cards_.size(); i += 1) {
+            auto sprite = Card::back_sprite();
+            sprite.setScale({2.0f, 2.0f});
+
+            float x_position;
+            switch (position_) {
+                case Position::East:
+                    sprite.rotate(sf::degrees(90.0f));
+                    x_position = render_target.getSize().x
+                        - sprite.getGlobalBounds().size.x / 2.0f;
+                    break;
+                case Position::West:
+                    sprite.rotate(sf::degrees(-90.0f));
+                    x_position = sprite.getGlobalBounds().size.x / 2.0f;
+                    break;
+                default:
+                    assert(false); // Unreachable.
+                    return;
+            }
 
             const auto height = sprite.getGlobalBounds().size.x
                 - VERTICAL_SPACING + (cards_.size() - 1) * VERTICAL_SPACING;
             sprite.setPosition(
-                {sprite.getGlobalBounds().size.x / 2.0f,
+                {x_position,
                  render_target.getSize().y / 2.0f - height / 2.0f
                      + i * VERTICAL_SPACING}
             );
