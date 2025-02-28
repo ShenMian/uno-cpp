@@ -1,11 +1,13 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <cassert>
 #include <memory>
 #include <optional>
 #include <vector>
 
+#include "SFML/System/Vector2.hpp"
 #include "card.hpp"
 
 // A deck of UNO cards.
@@ -51,6 +53,16 @@ class Deck {
         auto card = std::move(cards_.back());
         cards_.pop_back();
         return card;
+    }
+
+    void render(sf::RenderTarget& render_target) const {
+        auto sprite = Card::back_sprite();
+        sprite.setScale({2.0f, 2.0f});
+        sprite.setPosition(
+            sf::Vector2f(render_target.getSize()) / 2.0f
+            - sf::Vector2f(170.0f, 0.0f)
+        );
+        render_target.draw(sprite);
     }
 
   private:

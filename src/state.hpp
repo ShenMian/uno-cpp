@@ -40,6 +40,7 @@ class State {
     }
 
     void render(sf::RenderTarget& render_target) const {
+        deck_.render(render_target);
         discard_pile_.render(render_target);
         for (const auto& player : players_) {
             player.render(render_target, discard_pile_);
