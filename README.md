@@ -19,6 +19,9 @@ xmake run
 
 # Generate compilation database
 xmake project -k compile_commands
+
+# Generate documentation
+doxygen
 ```
 
 ## Assets

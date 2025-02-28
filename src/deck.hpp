@@ -14,10 +14,10 @@ using std::optional;
 using std::unique_ptr;
 using std::vector;
 
-// A deck of UNO cards.
+/// A deck of UNO cards.
 class Deck {
   public:
-    // Constructs a deck with all 108 UNO cards.
+    /// Constructs a deck with all 108 UNO cards.
     Deck() {
         cards_.reserve(108);
         for (const auto color :
@@ -43,13 +43,13 @@ class Deck {
         assert(cards_.size() == 108);
     }
 
-    // Shuffles the deck.
+    /// Shuffles the deck.
     template<typename Rng>
     void shuffle(Rng& rng) {
         std::ranges::shuffle(cards_, rng);
     }
 
-    // Draws a card from the deck.
+    /// Draws a card from the deck.
     optional<unique_ptr<Card>> draw() noexcept {
         if (cards_.empty()) {
             return std::nullopt;

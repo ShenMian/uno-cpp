@@ -1,0 +1,3 @@
+PROJECT_NAME      = "uno-cpp"
+OUTPUT_DIRECTORY  = build/
+RECURSIVE         = YES

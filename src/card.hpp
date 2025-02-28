@@ -8,24 +8,25 @@
 
 using std::optional;
 
-// A UNO card.
+/// A UNO card.
 class Card {
   public:
     virtual ~Card() = default;
-    // Returns the value of the card.
+    /// Returns the value of the card.
     virtual uint8_t value() const noexcept = 0;
-    // Returns the index of the card in the atlas (spritesheet).
+    /// Returns the index of the card in the atlas (spritesheet).
     virtual uint8_t atlas_index() const noexcept = 0;
-    // Returns whether the card can be played on another card.
+    /// Returns whether the card can be played on another card.
     virtual bool can_play_on(const Card& other) const noexcept = 0;
 
-    // Returns a sprite representing the card.
+    /// Returns a sprite representing the card.
     sf::Sprite sprite() const;
 
     auto operator<=>(const Card& rhs) const noexcept {
         return atlas_index() <=> rhs.atlas_index();
     }
 
+    /// Returns a sprite representing the back of the card.
     static sf::Sprite back_sprite();
 
   private:
@@ -34,7 +35,7 @@ class Card {
 
 enum class Color : uint8_t { Red, Blue, Green, Yellow };
 
-// A number UNO card.
+/// A number UNO card.
 class NumberCard: public Card {
   public:
     NumberCard(Color color, uint8_t number) : color_(color), number_(number) {
@@ -73,7 +74,7 @@ enum class ActionSymbol : uint8_t {
     Skip,
 };
 
-// An action UNO card.
+/// An action UNO card.
 class ActionCard: public Card {
   public:
     ActionCard(Color color, ActionSymbol symbol) :
@@ -106,7 +107,7 @@ class ActionCard: public Card {
 
 enum class WildSymbol : uint8_t { Wild, WildDrawFour };
 
-// A wild UNO card.
+/// A wild UNO card.
 class WildCard: public Card {
   public:
     WildCard(WildSymbol symbol) : symbol_(symbol) {}
