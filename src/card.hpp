@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <optional>
 #include <stdexcept>
+#include <vector>
 
 using std::optional;
 
@@ -31,6 +32,7 @@ class Card {
 
   private:
     static sf::Texture spritesheet_;
+    static std::vector<sf::Sprite> sprites_;
 };
 
 enum class Color : uint8_t { Red, Blue, Green, Yellow };

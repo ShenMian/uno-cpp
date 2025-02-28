@@ -4,17 +4,22 @@ constexpr sf::Vector2i region_size(50, 66);
 constexpr sf::Vector2i grid_size(8, 8);
 
 sf::Texture Card::spritesheet_("assets/images/cards.png");
+std::vector<sf::Sprite> Card::sprites_;
 
 sf::Sprite Card::sprite() const {
-    const sf::IntRect region(
-        {region_size.x * (atlas_index() % grid_size.x),
-         region_size.y * (atlas_index() / grid_size.x)},
-        region_size
-    );
-    sf::Sprite sprite(spritesheet_, region);
-    sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
-
-    return sprite;
+    if (sprites_.empty()) {
+        for (int index = 0; index <= 55; index += 1) {
+            const sf::IntRect region(
+                {region_size.x * (index % grid_size.x),
+                 region_size.y * (index / grid_size.x)},
+                region_size
+            );
+            sf::Sprite sprite(spritesheet_, region);
+            sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
+            sprites_.push_back(std::move(sprite));
+        }
+    }
+    return sprites_[atlas_index()];
 }
 
 sf::Sprite Card::back_sprite() {
@@ -26,7 +31,6 @@ sf::Sprite Card::back_sprite() {
     );
     sf::Sprite sprite(spritesheet_, region);
     sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
-
     return sprite;
 }
 
