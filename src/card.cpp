@@ -1,16 +1,30 @@
 #include "card.hpp"
 
-sf::Sprite Card::sprite() const {
-    static sf::Texture card_spritesheet("assets/images/cards.png");
+constexpr sf::Vector2i region_size(50, 66);
+constexpr sf::Vector2i grid_size(8, 8);
 
-    const sf::Vector2i region_size(50, 66);
-    const sf::Vector2i grid_size(8, 8);
+sf::Texture Card::spritesheet_("assets/images/cards.png");
+
+sf::Sprite Card::sprite() const {
     const sf::IntRect region(
         {region_size.x * (atlas_index() % grid_size.x),
          region_size.y * (atlas_index() / grid_size.x)},
         region_size
     );
-    sf::Sprite sprite(card_spritesheet, region);
+    sf::Sprite sprite(spritesheet_, region);
+    sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
+
+    return sprite;
+}
+
+sf::Sprite Card::back_sprite() {
+    constexpr int index = 55;
+    constexpr sf::IntRect region(
+        {region_size.x * (index % grid_size.x),
+         region_size.y * (index / grid_size.x)},
+        region_size
+    );
+    sf::Sprite sprite(spritesheet_, region);
     sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
 
     return sprite;

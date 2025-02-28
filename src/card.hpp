@@ -23,6 +23,11 @@ class Card {
     auto operator<=>(const Card& rhs) const noexcept {
         return atlas_index() <=> rhs.atlas_index();
     }
+
+    static sf::Sprite back_sprite();
+
+  private:
+    static sf::Texture spritesheet_;
 };
 
 enum class Color : uint8_t { Red, Blue, Green, Yellow };
