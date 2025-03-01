@@ -131,6 +131,7 @@ class WildCard: public Card {
     }
 
     uint8_t atlas_index() const noexcept override {
+        // TODO
         return 4 * 13 + static_cast<uint8_t>(symbol_);
     }
 
