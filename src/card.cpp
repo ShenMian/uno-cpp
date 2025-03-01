@@ -8,7 +8,7 @@ std::vector<sf::Sprite> Card::sprites_;
 
 sf::Sprite Card::sprite() const {
     if (sprites_.empty()) {
-        for (int index = 0; index <= 55; index += 1) {
+        for (int index = 0; index <= 63; index += 1) {
             const sf::IntRect region(
                 {region_size.x * (index % grid_size.x),
                  region_size.y * (index / grid_size.x)},

@@ -131,8 +131,11 @@ class WildCard: public Card {
     }
 
     uint8_t atlas_index() const noexcept override {
-        // TODO
-        return 4 * 13 + static_cast<uint8_t>(symbol_);
+        if (!color_.has_value()) {
+            return 4 * 13 + static_cast<uint8_t>(symbol_);
+        }
+        return 56 + static_cast<uint8_t>(symbol_) * 4
+            + static_cast<uint8_t>(color_.value());
     }
 
     bool can_play_on(const Card&) const noexcept override {
