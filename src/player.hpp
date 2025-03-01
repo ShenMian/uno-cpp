@@ -11,8 +11,8 @@
 using std::unique_ptr;
 using std::vector;
 
-constexpr float HORIZONTAL_SPACING = 70.0f;
-constexpr float VERTICAL_SPACING = 70.0f;
+constexpr float MAX_HORIZONTAL_SPACING = 70.0f;
+constexpr float MAX_VERTICAL_SPACING = 70.0f;
 
 enum class Position { North, East, South, West };
 
@@ -58,11 +58,14 @@ class Player {
             auto sprite = cards_[i]->sprite();
             sprite.setScale({2.0f, 2.0f});
 
-            const auto width = sprite.getGlobalBounds().size.x
-                - HORIZONTAL_SPACING + (cards_.size() - 1) * HORIZONTAL_SPACING;
+            const auto spacing = std::min(
+                render_target.getSize().x * 0.5f / cards_.size(),
+                MAX_HORIZONTAL_SPACING
+            );
+            const auto width = sprite.getGlobalBounds().size.x - spacing
+                + (cards_.size() - 1) * spacing;
             sprite.setPosition(
-                {render_target.getSize().x / 2.0f - width / 2.0f
-                     + i * HORIZONTAL_SPACING,
+                {render_target.getSize().x / 2.0f - width / 2.0f + i * spacing,
                  render_target.getSize().y
                      - sprite.getGlobalBounds().size.y / 2.0f}
             );
@@ -81,11 +84,14 @@ class Player {
             auto sprite = Card::back_sprite();
             sprite.setScale({2.0f, 2.0f});
 
-            const auto width = sprite.getGlobalBounds().size.x
-                - HORIZONTAL_SPACING + (cards_.size() - 1) * HORIZONTAL_SPACING;
+            const auto spacing = std::min(
+                render_target.getSize().x * 0.5f / cards_.size(),
+                MAX_HORIZONTAL_SPACING
+            );
+            const auto width = sprite.getGlobalBounds().size.x - spacing
+                + (cards_.size() - 1) * spacing;
             sprite.setPosition(
-                {render_target.getSize().x / 2.0f - width / 2.0f
-                     + i * HORIZONTAL_SPACING,
+                {render_target.getSize().x / 2.0f - width / 2.0f + i * spacing,
                  sprite.getGlobalBounds().size.y / 2.0f}
             );
 
@@ -114,12 +120,15 @@ class Player {
                     return;
             }
 
-            const auto height = sprite.getGlobalBounds().size.x
-                - VERTICAL_SPACING + (cards_.size() - 1) * VERTICAL_SPACING;
+            const auto spacing = std::min(
+                render_target.getSize().y * 0.5f / cards_.size(),
+                MAX_VERTICAL_SPACING
+            );
+            const auto height = sprite.getGlobalBounds().size.x - spacing
+                + (cards_.size() - 1) * spacing;
             sprite.setPosition(
                 {x_position,
-                 render_target.getSize().y / 2.0f - height / 2.0f
-                     + i * VERTICAL_SPACING}
+                 render_target.getSize().y / 2.0f - height / 2.0f + i * spacing}
             );
 
             render_target.draw(sprite);
