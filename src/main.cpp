@@ -13,6 +13,11 @@ int main() {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
+            if (auto resized = event->getIf<sf::Event::Resized>()) {
+                window.setView(
+                    sf::View(sf::FloatRect({0, 0}, sf::Vector2f(resized->size)))
+                );
+            }
         }
 
         window.clear();
