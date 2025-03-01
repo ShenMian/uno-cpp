@@ -19,6 +19,11 @@ class Deck {
   public:
     /// Constructs a deck with all 108 UNO cards.
     Deck() {
+        // UNO includes 108 cards: 25 in each of four color suits (red, yellow,
+        // green, blue), each suit consisting of one zero, two each of 1
+        // through 9, and two each of the action cards "Skip", "Draw Two", and
+        // "Reverse". The deck also contains four "Wild" cards and four "Wild
+        // Draw Four".
         cards_.reserve(108);
         for (const auto color :
              {Color::Red, Color::Blue, Color::Green, Color::Yellow}) {
