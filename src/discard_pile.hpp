@@ -24,17 +24,18 @@ class DiscardPile {
     void render(sf::RenderTarget& render_target) const {
         static auto seed = std::random_device {}();
         std::mt19937 gen(seed);
-        std::uniform_real_distribution<float> distrib(-20.0f, 20.0f);
+        std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
             sprite.setScale({2.0f, 2.0f});
             sprite.setPosition(sf::Vector2f(render_target.getSize()) / 2.0f);
 
             // Generate random offset to make cards look naturally stacked.
-            const sf::Vector2f offset(distrib(gen), distrib(gen));
+            const sf::Vector2f offset(distrib(gen) * 10.f, distrib(gen) * 10.f);
             sprite.setPosition(
                 sf::Vector2f(render_target.getSize()) / 2.0f + offset
             );
+            sprite.setRotation(sf::degrees(distrib(gen) * 5.f));
 
             // Dim the cards below the top card.
             if (i < cards_.size() - 1) {
