@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 
+#include "audio.hpp"
 #include "state.hpp"
 
 int main() {
@@ -7,6 +8,12 @@ int main() {
     window.setFramerateLimit(144);
 
     State state;
+
+    Audio audio;
+    audio.open_bgm();
+    audio.load_sounds();
+
+    audio.play_bgm();
 
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {

@@ -28,3 +28,4 @@ doxygen
 
 - **Pixel UNO Cards**: <https://ivoryred.itch.io/pixel-uno-cards>.
 - **Casino Audio**: <https://www.kenney.nl/assets/casino-audio>.
+- **Star Light**: <https://opengameart.org/content/star-light>.
