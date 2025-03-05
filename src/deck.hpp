@@ -7,7 +7,6 @@
 #include <optional>
 #include <vector>
 
-#include "SFML/System/Vector2.hpp"
 #include "card.hpp"
 
 using std::optional;
