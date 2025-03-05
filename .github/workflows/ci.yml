@@ -24,4 +24,8 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build
-      run: xmake -y
+      run: xmake --yes
+
+    - name: Run tests
+      if: runner.os != 'Linux'
+      run: xmake test --verbose --workdir=.
