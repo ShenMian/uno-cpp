@@ -20,6 +20,12 @@ int main() {
             }
         }
 
+        static sf::Clock clock;
+        if (clock.getElapsedTime().asSeconds() > 1.5f) {
+            state.update();
+            clock.restart();
+        }
+
         window.clear();
         state.render(window);
         window.display();

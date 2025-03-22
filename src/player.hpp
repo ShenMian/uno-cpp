@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <cassert>
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include "card.hpp"
@@ -8,6 +9,7 @@
 #include "deck.hpp"
 #include "discard_pile.hpp"
 
+using std::optional;
 using std::unique_ptr;
 using std::vector;
 
@@ -18,17 +20,24 @@ enum class Position { North, East, South, West };
 
 class Player {
   public:
-    Player(Position position, Deck& deck) : position_(position) {
-        for (size_t i = 0; i < 7; i += 1) {
-            cards_.push_back(deck.draw().value());
-        }
-        std::sort(
-            cards_.begin(),
-            cards_.end(),
-            [](const unique_ptr<Card>& lhs, const unique_ptr<Card>& rhs) {
-                return *lhs < *rhs;
-            }
+    virtual ~Player() = default;
+    virtual optional<unique_ptr<Card>> play_card(const DiscardPile&) = 0;
+    virtual Color choose_color() const = 0;
+
+    void draw_card(Deck& deck) {
+        auto card = deck.draw().value();
+        cards_.insert(
+            std::lower_bound(cards_.begin(), cards_.end(), card),
+            std::move(card)
         );
+    }
+
+    bool is_hand_empty() const noexcept {
+        return cards_.empty();
+    }
+
+    Position position() const noexcept {
+        return position_;
     }
 
     void render(
@@ -48,6 +57,22 @@ class Player {
                 break;
         }
     }
+
+  protected:
+    Player(Position position, Deck& deck) : position_(position) {
+        for (size_t i = 0; i < 17; i += 1) {
+            cards_.push_back(deck.draw().value());
+        }
+        std::sort(
+            cards_.begin(),
+            cards_.end(),
+            [](const unique_ptr<Card>& lhs, const unique_ptr<Card>& rhs) {
+                return *lhs < *rhs;
+            }
+        );
+    }
+
+    vector<unique_ptr<Card>> cards_;
 
   private:
     void render_south(
@@ -136,5 +161,38 @@ class Player {
     }
 
     Position position_;
-    vector<unique_ptr<Card>> cards_;
+};
+
+class AiPlayer: public Player {
+  public:
+    AiPlayer(Position position, Deck& deck) : Player(position, deck) {}
+
+    optional<unique_ptr<Card>>
+    play_card(const DiscardPile& discard_pile) override {
+        for (auto it = cards_.begin(); it != cards_.end(); ++it) {
+            if ((*it)->can_play_on(discard_pile.peek_top())) {
+                auto card = std::move(*it);
+                cards_.erase(it);
+                return card;
+            }
+        }
+        return std::nullopt;
+    }
+
+    Color choose_color() const override {
+        // Choose the most common color in the player's hand.
+        std::array<uint8_t, 4> color_counts = {0, 0, 0, 0};
+        for (const auto& card : cards_) {
+            if (auto number_card = dynamic_cast<NumberCard*>(card.get())) {
+                color_counts[static_cast<uint8_t>(number_card->color())] += 1;
+            }
+            if (auto action_card = dynamic_cast<ActionCard*>(card.get())) {
+                color_counts[static_cast<uint8_t>(action_card->color())] += 1;
+            }
+        }
+        return static_cast<Color>(std::distance(
+            color_counts.begin(),
+            std::max_element(color_counts.begin(), color_counts.end())
+        ));
+    }
 };
