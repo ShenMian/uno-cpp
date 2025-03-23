@@ -11,6 +11,7 @@
 
 enum class Direction : int8_t { Clockwise = 1, CounterClockwise = -1 };
 
+/// A game state of an Uno card game.
 class State {
   public:
     State() : seed_(std::random_device {}()), rng_(seed_), deck_(rng_) {

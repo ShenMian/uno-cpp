@@ -19,6 +19,7 @@ constexpr float MAX_VERTICAL_SPACING = 70.0f;
 
 enum class Position : int8_t { North, East, South, West };
 
+/// A player in the Uno game.
 class Player {
   public:
     virtual ~Player() = default;
@@ -162,6 +163,7 @@ class Player {
     Position position_;
 };
 
+/// An AI-controlled player for the UNO game.
 class AiPlayer: public Player {
   public:
     AiPlayer(Position position, Deck& deck) : Player(position, deck) {}
