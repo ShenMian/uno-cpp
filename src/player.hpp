@@ -32,7 +32,13 @@ class Player {
     void draw_card_from_deck(Deck& deck) {
         auto card = deck.draw().value();
         cards_.insert(
-            std::lower_bound(cards_.begin(), cards_.end(), card),
+            std::lower_bound(
+                cards_.begin(),
+                cards_.end(),
+                card,
+                [](const unique_ptr<Card>& a,
+                   const unique_ptr<Card>& b) -> bool { return *a < *b; }
+            ),
             std::move(card)
         );
     }
