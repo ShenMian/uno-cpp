@@ -32,7 +32,6 @@ class State {
 
     void update() {
         auto& player = current_player();
-        next_turn();
 
         auto card = player.play_card(discard_pile_);
         while (!card.has_value()) {
@@ -45,22 +44,22 @@ class State {
         if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
             wild_card->set_color(player.select_wild_color());
             if (wild_card->symbol() == WildSymbol::WildDrawFour) {
-                auto& next_player = current_player();
-                next_player.draw_card_from_deck(deck_);
-                next_player.draw_card_from_deck(deck_);
-                next_player.draw_card_from_deck(deck_);
-                next_player.draw_card_from_deck(deck_);
                 next_turn();
+                auto& next_player = current_player();
+                for (uint8_t i = 0; i < 4; i += 1) {
+                    next_player.draw_card_from_deck(deck_);
+                }
             }
         }
         if (auto action_card =
                 dynamic_cast<const ActionCard*>(card.value().get())) {
             switch (action_card->symbol()) {
                 case ActionSymbol::DrawTwo: {
-                    auto& next_player = current_player();
-                    next_player.draw_card_from_deck(deck_);
-                    next_player.draw_card_from_deck(deck_);
                     next_turn();
+                    auto& next_player = current_player();
+                    for (uint8_t i = 0; i < 2; i += 1) {
+                        next_player.draw_card_from_deck(deck_);
+                    }
                     break;
                 }
                 case ActionSymbol::Reverse:
@@ -71,6 +70,7 @@ class State {
                     break;
             }
         }
+        next_turn();
         assert(card.value()->can_play_on(discard_pile_.peek_top()));
         discard_pile_.push_back(std::move(card.value()));
     }
