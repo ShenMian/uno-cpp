@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cassert>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -9,6 +10,7 @@
 #include "deck.hpp"
 #include "discard_pile.hpp"
 
+
 using std::optional;
 using std::unique_ptr;
 using std::vector;
@@ -16,7 +18,7 @@ using std::vector;
 constexpr float MAX_HORIZONTAL_SPACING = 70.0f;
 constexpr float MAX_VERTICAL_SPACING = 70.0f;
 
-enum class Position { North, East, South, West };
+enum class Position : int8_t { North, East, South, West };
 
 class Player {
   public:

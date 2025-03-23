@@ -24,31 +24,31 @@ class State {
 
         auto card = deck_.draw().value();
         if (auto wild_card = dynamic_cast<WildCard*>(card.get())) {
-            wild_card->set_color(current_player()->choose_color());
+            wild_card->set_color(current_player().choose_color());
         }
         discard_pile_.push_back(std::move(card));
     }
 
     void update() {
-        auto player = current_player();
+        auto& player = current_player();
         next_turn();
 
-        auto card = player->play_card(discard_pile_);
+        auto card = player.play_card(discard_pile_);
         while (!card.has_value()) {
-            player->draw_card(deck_);
-            card = player->play_card(discard_pile_);
+            player.draw_card(deck_);
+            card = player.play_card(discard_pile_);
         }
-        if (player->is_hand_empty()) {
+        if (player.is_hand_empty()) {
             assert(false); // TODO
         }
         if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
-            wild_card->set_color(player->choose_color());
+            wild_card->set_color(player.choose_color());
             if (wild_card->symbol() == WildSymbol::WildDrawFour) {
-                auto next_player = current_player();
-                next_player->draw_card(deck_);
-                next_player->draw_card(deck_);
-                next_player->draw_card(deck_);
-                next_player->draw_card(deck_);
+                auto& next_player = current_player();
+                next_player.draw_card(deck_);
+                next_player.draw_card(deck_);
+                next_player.draw_card(deck_);
+                next_player.draw_card(deck_);
                 next_turn();
             }
         }
@@ -56,9 +56,9 @@ class State {
                 dynamic_cast<const ActionCard*>(card.value().get())) {
             switch (action_card->symbol()) {
                 case ActionSymbol::DrawTwo: {
-                    auto next_player = current_player();
-                    next_player->draw_card(deck_);
-                    next_player->draw_card(deck_);
+                    auto& next_player = current_player();
+                    next_player.draw_card(deck_);
+                    next_player.draw_card(deck_);
                     next_turn();
                     break;
                 }
@@ -75,14 +75,7 @@ class State {
     }
 
     void reverse_direction() {
-        switch (direction_) {
-            case Direction::Clockwise:
-                direction_ = Direction::CounterClockwise;
-                break;
-            case Direction::CounterClockwise:
-                direction_ = Direction::Clockwise;
-                break;
-        }
+        direction_ = static_cast<Direction>(-static_cast<int8_t>(direction_));
     }
 
     void render(sf::RenderTarget& render_target) const {
@@ -94,13 +87,15 @@ class State {
     }
 
   private:
-    Player* current_player() {
-        return players_[player_index_].get();
+    Player& current_player() {
+        return *players_[static_cast<int8_t>(position_)].get();
     }
 
     void next_turn() {
-        player_index_ =
-            (player_index_ + static_cast<int8_t>(direction_)) % players_.size();
+        position_ = static_cast<Position>(
+            (static_cast<int8_t>(position_) + static_cast<int8_t>(direction_))
+            % players_.size()
+        );
     }
 
     unsigned int seed_;
@@ -110,6 +105,7 @@ class State {
     DiscardPile discard_pile_;
 
     std::vector<std::unique_ptr<Player>> players_;
-    uint8_t player_index_ = 0;
-    Direction direction_ = Direction::Clockwise;
+
+    Position position_ = Position::South; // Position of the current player
+    Direction direction_ = Direction::Clockwise; // Direction of play
 };
