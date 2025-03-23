@@ -24,7 +24,7 @@ class State {
 
         auto card = deck_.draw().value();
         if (auto wild_card = dynamic_cast<WildCard*>(card.get())) {
-            wild_card->set_color(current_player().choose_color());
+            wild_card->set_color(current_player().select_wild_color());
         }
         discard_pile_.push_back(std::move(card));
     }
@@ -35,20 +35,20 @@ class State {
 
         auto card = player.play_card(discard_pile_);
         while (!card.has_value()) {
-            player.draw_card(deck_);
+            player.draw_card_from_deck(deck_);
             card = player.play_card(discard_pile_);
         }
         if (player.is_hand_empty()) {
             assert(false); // TODO
         }
         if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
-            wild_card->set_color(player.choose_color());
+            wild_card->set_color(player.select_wild_color());
             if (wild_card->symbol() == WildSymbol::WildDrawFour) {
                 auto& next_player = current_player();
-                next_player.draw_card(deck_);
-                next_player.draw_card(deck_);
-                next_player.draw_card(deck_);
-                next_player.draw_card(deck_);
+                next_player.draw_card_from_deck(deck_);
+                next_player.draw_card_from_deck(deck_);
+                next_player.draw_card_from_deck(deck_);
+                next_player.draw_card_from_deck(deck_);
                 next_turn();
             }
         }
@@ -57,8 +57,8 @@ class State {
             switch (action_card->symbol()) {
                 case ActionSymbol::DrawTwo: {
                     auto& next_player = current_player();
-                    next_player.draw_card(deck_);
-                    next_player.draw_card(deck_);
+                    next_player.draw_card_from_deck(deck_);
+                    next_player.draw_card_from_deck(deck_);
                     next_turn();
                     break;
                 }
@@ -82,7 +82,7 @@ class State {
         deck_.render(render_target);
         discard_pile_.render(render_target);
         for (const auto& player : players_) {
-            player->render(render_target, discard_pile_);
+            player->render_hand(render_target, discard_pile_);
         }
     }
 

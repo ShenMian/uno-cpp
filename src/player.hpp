@@ -10,7 +10,6 @@
 #include "deck.hpp"
 #include "discard_pile.hpp"
 
-
 using std::optional;
 using std::unique_ptr;
 using std::vector;
@@ -23,10 +22,13 @@ enum class Position : int8_t { North, East, South, West };
 class Player {
   public:
     virtual ~Player() = default;
+    /// Play a card from the player's hand.
     virtual optional<unique_ptr<Card>> play_card(const DiscardPile&) = 0;
-    virtual Color choose_color() const = 0;
+    /// Choose a color for a Wild card.
+    virtual Color select_wild_color() const = 0;
 
-    void draw_card(Deck& deck) {
+    /// Draw a card from the deck.
+    void draw_card_from_deck(Deck& deck) {
         auto card = deck.draw().value();
         cards_.insert(
             std::lower_bound(cards_.begin(), cards_.end(), card),
@@ -34,15 +36,17 @@ class Player {
         );
     }
 
+    /// Returns true if the player has no cards left in their hand.
     bool is_hand_empty() const noexcept {
         return cards_.empty();
     }
 
+    /// Returns the position of the player.
     Position position() const noexcept {
         return position_;
     }
 
-    void render(
+    void render_hand(
         sf::RenderTarget& render_target,
         const DiscardPile& discard_pile
     ) const {
@@ -62,16 +66,9 @@ class Player {
 
   protected:
     Player(Position position, Deck& deck) : position_(position) {
-        for (size_t i = 0; i < 17; i += 1) {
-            cards_.push_back(deck.draw().value());
+        for (size_t i = 0; i < 7; i += 1) {
+            draw_card_from_deck(deck);
         }
-        std::sort(
-            cards_.begin(),
-            cards_.end(),
-            [](const unique_ptr<Card>& lhs, const unique_ptr<Card>& rhs) {
-                return *lhs < *rhs;
-            }
-        );
     }
 
     vector<unique_ptr<Card>> cards_;
@@ -181,7 +178,7 @@ class AiPlayer: public Player {
         return std::nullopt;
     }
 
-    Color choose_color() const override {
+    Color select_wild_color() const override {
         // Choose the most common color in the player's hand.
         std::array<uint8_t, 4> color_counts = {0, 0, 0, 0};
         for (const auto& card : cards_) {
