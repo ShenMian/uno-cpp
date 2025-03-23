@@ -30,4 +30,6 @@ int main() {
         state.render(window);
         window.display();
     }
+
+    return 0;
 }
