@@ -75,10 +75,6 @@ class State {
         discard_pile_.push_back(std::move(card.value()));
     }
 
-    void reverse_direction() {
-        direction_ = static_cast<Direction>(-static_cast<int8_t>(direction_));
-    }
-
     void render(sf::RenderTarget& render_target) const {
         deck_.render(render_target);
         discard_pile_.render(render_target);
@@ -97,6 +93,10 @@ class State {
             (static_cast<uint8_t>(position_) + static_cast<int8_t>(direction_))
             % players_.size()
         );
+    }
+
+    void reverse_direction() {
+        direction_ = static_cast<Direction>(-static_cast<int8_t>(direction_));
     }
 
     unsigned int seed_;
