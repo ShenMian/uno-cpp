@@ -89,12 +89,12 @@ class State {
 
   private:
     Player& current_player() {
-        return *players_[static_cast<int8_t>(position_)].get();
+        return *players_[static_cast<uint8_t>(position_)].get();
     }
 
     void next_turn() {
         position_ = static_cast<Position>(
-            (static_cast<int8_t>(position_) + static_cast<int8_t>(direction_))
+            (static_cast<uint8_t>(position_) + static_cast<int8_t>(direction_))
             % players_.size()
         );
     }

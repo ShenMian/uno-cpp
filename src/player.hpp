@@ -17,7 +17,7 @@ using std::vector;
 constexpr float MAX_HORIZONTAL_SPACING = 70.0f;
 constexpr float MAX_VERTICAL_SPACING = 70.0f;
 
-enum class Position : int8_t { North, East, South, West };
+enum class Position : uint8_t { North, East, South, West };
 
 /// A player in the Uno game.
 class Player {
