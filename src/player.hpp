@@ -35,9 +35,10 @@ class Player {
             std::lower_bound(
                 cards_.begin(),
                 cards_.end(),
-                card,
-                [](const unique_ptr<Card>& a,
-                   const unique_ptr<Card>& b) -> bool { return *a < *b; }
+                *card,
+                [](const auto& ptr, const auto& value) -> bool {
+                    return *ptr < value;
+                }
             ),
             std::move(card)
         );
