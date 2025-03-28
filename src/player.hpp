@@ -5,6 +5,9 @@
 #include <optional>
 #include <vector>
 
+// DEBUG
+#include <iostream>
+
 #include "card.hpp"
 #include "config.hpp"
 #include "deck.hpp"
@@ -36,13 +39,13 @@ class Player {
             case Position::North:
                 render_north(render_target);
                 break;
-            case Position::South:
-                render_south(render_target, discard_pile);
-                break;
             case Position::East:
             case Position::West:
                 render_vertical(render_target);
                 break;
+            default:
+                assert(false); // Unreachable.
+                return;
         }
     }
 
@@ -82,39 +85,10 @@ class Player {
     vector<unique_ptr<Card>> cards_;
 
   private:
-    void render_south(
-        sf::RenderTarget& render_target,
-        const DiscardPile& discard_pile
-    ) const {
-        for (size_t i = 0; i < cards_.size(); i += 1) {
-            auto sprite = cards_[i]->sprite();
-            sprite.setScale({2.0f, 2.0f});
-
-            const auto spacing = std::min(
-                render_target.getSize().x * 0.5f / cards_.size(),
-                MAX_SPACING
-            );
-            const auto width = sprite.getGlobalBounds().size.x - spacing
-                + (cards_.size() - 1) * spacing;
-            sprite.setPosition(
-                {render_target.getSize().x / 2.0f - width / 2.0f + i * spacing,
-                 render_target.getSize().y
-                     - sprite.getGlobalBounds().size.y / 2.0f}
-            );
-
-            // Dim the cards that cannot be played.
-            if (!cards_[i]->can_play_on(discard_pile.peek_top())) {
-                sprite.setColor(DIM_COLOR);
-            }
-
-            render_target.draw(sprite);
-        }
-    }
-
     void render_north(sf::RenderTarget& render_target) const {
+        assert(position_ == Position::North);
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = Card::back_sprite();
-            sprite.setScale({2.0f, 2.0f});
 
             const auto spacing = std::min(
                 render_target.getSize().x * 0.5f / cards_.size(),
@@ -132,9 +106,9 @@ class Player {
     }
 
     void render_vertical(sf::RenderTarget& render_target) const {
+        assert(position_ == Position::East || position_ == Position::West);
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = Card::back_sprite();
-            sprite.setScale({2.0f, 2.0f});
 
             float x_position;
             switch (position_) {
@@ -176,12 +150,14 @@ class LocalPlayer: public Player {
 
     optional<unique_ptr<Card>>
     play_card(const DiscardPile& discard_pile) override {
-        // TODO
+        // DEBUG
+        std::cout << "LOCAL PLAYER: play_card" << std::endl;
+        int i;
+        std::cin >> i;
         return std::nullopt;
     }
 
     Color select_wild_color() const override {
-        // TODO
         return Color::Red;
     }
 
@@ -192,7 +168,6 @@ class LocalPlayer: public Player {
     ) const override {
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
-            sprite.setScale({2.0f, 2.0f});
 
             const auto spacing = std::min(
                 render_target.getSize().x * 0.5f / cards_.size(),
