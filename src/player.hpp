@@ -27,6 +27,24 @@ class Player {
     /// Choose a color for a Wild card.
     virtual Color select_wild_color() const = 0;
 
+    virtual void render(
+        sf::RenderTarget& render_target,
+        const DiscardPile& discard_pile
+    ) const {
+        switch (position_) {
+            case Position::North:
+                render_north(render_target);
+                break;
+            case Position::South:
+                render_south(render_target, discard_pile);
+                break;
+            case Position::East:
+            case Position::West:
+                render_vertical(render_target);
+                break;
+        }
+    }
+
     /// Draw a card from the deck.
     void draw_card_from_deck(Deck& deck) {
         auto card = deck.draw().value();
@@ -51,24 +69,6 @@ class Player {
     /// Returns the position of the player.
     Position position() const noexcept {
         return position_;
-    }
-
-    void render_hand(
-        sf::RenderTarget& render_target,
-        const DiscardPile& discard_pile
-    ) const {
-        switch (position_) {
-            case Position::North:
-                render_north(render_target);
-                break;
-            case Position::South:
-                render_south(render_target, discard_pile);
-                break;
-            case Position::East:
-            case Position::West:
-                render_vertical(render_target);
-                break;
-        }
     }
 
   protected:
@@ -167,6 +167,51 @@ class Player {
     }
 
     Position position_;
+};
+
+class LocalPlayer: public Player {
+  public:
+    LocalPlayer(Position position, Deck& deck) : Player(position, deck) {}
+
+    optional<unique_ptr<Card>>
+    play_card(const DiscardPile& discard_pile) override {
+        // TODO
+        return std::nullopt;
+    }
+
+    Color select_wild_color() const override {
+        // TODO
+        return Color::Red;
+    }
+
+    virtual void render(
+        sf::RenderTarget& render_target,
+        const DiscardPile& discard_pile
+    ) const override {
+        for (size_t i = 0; i < cards_.size(); i += 1) {
+            auto sprite = cards_[i]->sprite();
+            sprite.setScale({2.0f, 2.0f});
+
+            const auto spacing = std::min(
+                render_target.getSize().x * 0.5f / cards_.size(),
+                MAX_SPACING
+            );
+            const auto width = sprite.getGlobalBounds().size.x - spacing
+                + (cards_.size() - 1) * spacing;
+            sprite.setPosition(
+                {render_target.getSize().x / 2.0f - width / 2.0f + i * spacing,
+                 render_target.getSize().y
+                     - sprite.getGlobalBounds().size.y / 2.0f}
+            );
+
+            // Dim the cards that cannot be played.
+            if (!cards_[i]->can_play_on(discard_pile.peek_top())) {
+                sprite.setColor(DIM_COLOR);
+            }
+
+            render_target.draw(sprite);
+        }
+    }
 };
 
 /// An AI-controlled player for the UNO game.

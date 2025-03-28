@@ -15,13 +15,13 @@ enum class Direction : int8_t { Clockwise = 1, CounterClockwise = -1 };
 class State {
   public:
     State() : seed_(std::random_device {}()), rng_(seed_), deck_(rng_) {
-        for (const auto position :
-             {Position::South,
-              Position::West,
-              Position::North,
-              Position::East}) {
-            players_.push_back(std::make_unique<AiPlayer>(position, deck_));
-        }
+        players_.push_back(std::make_unique<AiPlayer>(Position::North, deck_));
+        players_.push_back(std::make_unique<AiPlayer>(Position::East, deck_));
+        players_.push_back(
+            std::make_unique<LocalPlayer>(Position::South, deck_)
+        );
+        // players_.push_back(std::make_unique<AiPlayer>(Position::South, deck_));
+        players_.push_back(std::make_unique<AiPlayer>(Position::West, deck_));
 
         auto card = deck_.draw().value();
         if (auto wild_card = dynamic_cast<WildCard*>(card.get())) {
@@ -79,7 +79,7 @@ class State {
         deck_.render(render_target);
         discard_pile_.render(render_target);
         for (const auto& player : players_) {
-            player->render_hand(render_target, discard_pile_);
+            player->render(render_target, discard_pile_);
         }
         // TODO: Add direction indicators
         render_player_indicator(render_target);
@@ -87,8 +87,7 @@ class State {
 
   private:
     void render_player_indicator(sf::RenderTarget& render_target) const {
-        const auto player_index = static_cast<int8_t>(position_)
-            + static_cast<int8_t>(direction_) % 4;
+        const auto player_index = static_cast<int8_t>(position_);
         sf::CircleShape indicator(40.f, 3);
         indicator.setOrigin(
             indicator.getLocalBounds().size / 2.0f
@@ -124,6 +123,6 @@ class State {
 
     std::vector<std::unique_ptr<Player>> players_;
 
-    Position position_ = Position::South; // Position of the current player
+    Position position_ = Position::West; // Position of the current player
     Direction direction_ = Direction::Clockwise; // Direction of play
 };
