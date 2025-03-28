@@ -81,9 +81,26 @@ class State {
         for (const auto& player : players_) {
             player->render_hand(render_target, discard_pile_);
         }
+        // TODO: Add direction indicators
+        render_player_indicator(render_target);
     }
 
   private:
+    void render_player_indicator(sf::RenderTarget& render_target) const {
+        const auto player_index = static_cast<int8_t>(position_)
+            + static_cast<int8_t>(direction_) % 4;
+        sf::CircleShape indicator(40.f, 3);
+        indicator.setOrigin(
+            indicator.getLocalBounds().size / 2.0f
+            + sf::Vector2f(0.f, player_index % 2 == 0 ? 200.f : 300.f)
+        );
+        indicator.setPosition(sf::Vector2f(render_target.getSize()) / 2.0f);
+        indicator.setRotation(
+            sf::degrees(90.f) * static_cast<float>(player_index)
+        );
+        render_target.draw(indicator);
+    }
+
     Player& current_player() {
         return *players_[static_cast<uint8_t>(position_)].get();
     }
