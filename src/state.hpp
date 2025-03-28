@@ -78,8 +78,12 @@ class State {
     void render(sf::RenderTarget& render_target) const {
         deck_.render(render_target);
         discard_pile_.render(render_target);
-        for (const auto& player : players_) {
-            player->render(render_target, discard_pile_);
+        for (size_t i = 0; i < players_.size(); i += 1) {
+            players_[i]->render(
+                render_target,
+                discard_pile_,
+                i == static_cast<uint8_t>(position_)
+            );
         }
         // TODO: Add direction indicators
         render_player_indicator(render_target);

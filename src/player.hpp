@@ -29,7 +29,8 @@ class Player {
 
     virtual void render(
         sf::RenderTarget& render_target,
-        const DiscardPile& discard_pile
+        const DiscardPile& discard_pile,
+        bool is_current_player
     ) const {
         switch (position_) {
             case Position::North:
@@ -186,7 +187,8 @@ class LocalPlayer: public Player {
 
     virtual void render(
         sf::RenderTarget& render_target,
-        const DiscardPile& discard_pile
+        const DiscardPile& discard_pile,
+        bool is_current_player
     ) const override {
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
@@ -205,7 +207,8 @@ class LocalPlayer: public Player {
             );
 
             // Dim the cards that cannot be played.
-            if (!cards_[i]->can_play_on(discard_pile.peek_top())) {
+            if (!is_current_player
+                || !cards_[i]->can_play_on(discard_pile.peek_top())) {
                 sprite.setColor(DIM_COLOR);
             }
 
