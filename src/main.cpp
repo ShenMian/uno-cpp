@@ -22,9 +22,11 @@ int main() {
                 window.close();
             }
             if (auto resized = event->getIf<sf::Event::Resized>()) {
-                window.setView(sf::View(
-                    sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
-                ));
+                window.setView(
+                    sf::View(
+                        sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
+                    )
+                );
             }
         }
 
