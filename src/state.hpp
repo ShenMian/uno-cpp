@@ -23,7 +23,6 @@ class State {
         players_.push_back(
             std::make_unique<LocalPlayer>(Position::South, deck_, render_target)
         );
-        // players_.push_back(std::make_unique<AiPlayer>(Position::South, deck_));
         players_.push_back(std::make_unique<AiPlayer>(Position::West, deck_));
 
         auto card = deck_.draw().value();
