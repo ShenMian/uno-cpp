@@ -7,15 +7,11 @@ int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
 
-    State state;
+    State state(window);
 
     std::thread thread([&]() {
         while (window.isOpen()) {
-            static sf::Clock clock;
-            if (clock.getElapsedTime().asSeconds() > 1.5f) {
-                state.update();
-                clock.restart();
-            }
+            state.update();
         }
     });
     thread.detach();
