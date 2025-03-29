@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <cstdint>
@@ -178,16 +179,9 @@ class LocalPlayer: public Player {
         }
     }
 
-    optional<unique_ptr<Card>> play_card(const DiscardPile& discard_pile
-    ) override {
-        bool has_playable_card = false;
-        for (auto it = cards_.begin(); it != cards_.end(); ++it) {
-            if ((*it)->can_play_on(discard_pile.peek_top())) {
-                has_playable_card = true;
-                break;
-            }
-        }
-        if (!has_playable_card) {
+    optional<unique_ptr<Card>>
+    play_card(const DiscardPile& discard_pile) override {
+        if (!has_playable_card(discard_pile)) {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             return std::nullopt;
         }
@@ -212,6 +206,16 @@ class LocalPlayer: public Player {
         const DiscardPile& discard_pile,
         bool is_current_player
     ) const override {
+        render_cards(window, discard_pile, is_current_player);
+        render_color_picker(window);
+    }
+
+  private:
+    void render_cards(
+        sf::RenderWindow& window,
+        const DiscardPile& discard_pile,
+        bool is_current_player
+    ) const {
         std::vector<sf::Sprite> sprites;
         sprites.reserve(cards_.size());
 
@@ -268,11 +272,8 @@ class LocalPlayer: public Player {
 
             window.draw(sprites[i]);
         }
-
-        render_color_picker(window);
     }
 
-  private:
     void render_color_picker(sf::RenderWindow& render_target) const {
         if (is_picking_color_) {
             for (int i = 0; i < 4; i += 1) {
@@ -283,6 +284,12 @@ class LocalPlayer: public Player {
                 }
             }
         }
+    }
+
+    bool has_playable_card(const DiscardPile& discard_pile) const {
+        return std::ranges::any_of(cards_, [&](auto&& card) {
+            return card->can_play_on(discard_pile.peek_top());
+        });
     }
 
     Button buttons_[4];
@@ -299,8 +306,8 @@ class AiPlayer: public Player {
   public:
     AiPlayer(Position position, Deck& deck) : Player(position, deck) {}
 
-    optional<unique_ptr<Card>> play_card(const DiscardPile& discard_pile
-    ) override {
+    optional<unique_ptr<Card>>
+    play_card(const DiscardPile& discard_pile) override {
         for (auto it = cards_.begin(); it != cards_.end(); ++it) {
             if ((*it)->can_play_on(discard_pile.peek_top())) {
                 auto card = std::move(*it);
