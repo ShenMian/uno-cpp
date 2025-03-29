@@ -50,6 +50,7 @@ class State {
                 next_turn();
                 auto& next_player = current_player();
                 for (uint8_t i = 0; i < 4; i += 1) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
                     next_player.draw_card_from_deck(deck_);
                 }
             }
@@ -61,6 +62,9 @@ class State {
                     next_turn();
                     auto& next_player = current_player();
                     for (uint8_t i = 0; i < 2; i += 1) {
+                        std::this_thread::sleep_for(
+                            std::chrono::milliseconds(500)
+                        );
                         next_player.draw_card_from_deck(deck_);
                     }
                     break;
