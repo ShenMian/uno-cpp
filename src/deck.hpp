@@ -8,7 +8,9 @@
 #include <random>
 #include <vector>
 
-#include "card.hpp"
+#include "card/action_card.hpp"
+#include "card/number_card.hpp"
+#include "card/wild_card.hpp"
 
 using std::optional;
 using std::unique_ptr;
@@ -66,8 +68,9 @@ class Deck {
         }
         for (int i = 0; i < 4; i++) {
             cards_.push_back(std::make_unique<WildCard>(WildSymbol::Wild));
-            cards_.push_back(std::make_unique<WildCard>(WildSymbol::WildDrawFour
-            ));
+            cards_.push_back(
+                std::make_unique<WildCard>(WildSymbol::WildDrawFour)
+            );
         }
         shuffle();
     }

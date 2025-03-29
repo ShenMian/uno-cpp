@@ -5,7 +5,7 @@
 #include <random>
 #include <vector>
 
-#include "card.hpp"
+#include "card/card.hpp"
 #include "config.hpp"
 
 using std::unique_ptr;

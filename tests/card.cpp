@@ -1,8 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
-#include "../src/card.hpp"
-
 #include <doctest/doctest.h>
+
+#include "../src/card/action_card.hpp"
+#include "../src/card/number_card.hpp"
+#include "../src/card/wild_card.hpp"
 
 TEST_CASE("NumberCard properties and behavior") {
     NumberCard red_five(Color::Red, 5);

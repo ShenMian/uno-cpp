@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../card.hpp"
+#include "../card/card.hpp"
 #include "../deck.hpp"
 #include "../discard_pile.hpp"
 

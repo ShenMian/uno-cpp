@@ -4,11 +4,13 @@
 #include <random>
 #include <vector>
 
-#include "card.hpp"
+#include "card/action_card.hpp"
+#include "card/wild_card.hpp"
 #include "deck.hpp"
 #include "discard_pile.hpp"
 #include "player/ai_player.hpp"
 #include "player/local_player.hpp"
+
 
 enum class Direction : int8_t { Clockwise = 1, CounterClockwise = -1 };
 
