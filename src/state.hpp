@@ -7,7 +7,8 @@
 #include "card.hpp"
 #include "deck.hpp"
 #include "discard_pile.hpp"
-#include "player.hpp"
+#include "player/ai_player.hpp"
+#include "player/local_player.hpp"
 
 enum class Direction : int8_t { Clockwise = 1, CounterClockwise = -1 };
 
