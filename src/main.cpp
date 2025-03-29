@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <thread>
 
 #include "state.hpp"
 
@@ -6,7 +7,14 @@ int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
 
-    State state;
+    State state(window);
+
+    std::thread thread([&]() {
+        while (window.isOpen()) {
+            state.update();
+        }
+    });
+    thread.detach();
 
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
@@ -18,12 +26,6 @@ int main() {
                     sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
                 ));
             }
-        }
-
-        static sf::Clock clock;
-        if (clock.getElapsedTime().asSeconds() > 1.5f) {
-            state.update();
-            clock.restart();
         }
 
         window.clear();
