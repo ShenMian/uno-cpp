@@ -193,7 +193,7 @@ class LocalPlayer: public Player {
         }
         while (!selected_card_index_.has_value())
             ;
-        const std::lock_guard lock(cards_mutex_);
+        std::lock_guard lock(cards_mutex_);
         auto card = std::move(cards_[selected_card_index_.value()]);
         cards_.erase(std::next(cards_.begin(), selected_card_index_.value()));
         selected_card_index_ = std::nullopt;
@@ -215,7 +215,7 @@ class LocalPlayer: public Player {
         std::vector<sf::Sprite> sprites;
         sprites.reserve(cards_.size());
 
-        const std::lock_guard lock(cards_mutex_);
+        std::lock_guard lock(cards_mutex_);
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
 
@@ -287,7 +287,7 @@ class LocalPlayer: public Player {
 
     Button buttons_[4];
 
-    std::mutex cards_mutex_;
+    mutable std::mutex cards_mutex_;
 
     mutable bool is_picking_color_ = false;
     mutable Color picked_color_;

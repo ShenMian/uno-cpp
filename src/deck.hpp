@@ -66,9 +66,8 @@ class Deck {
         }
         for (int i = 0; i < 4; i++) {
             cards_.push_back(std::make_unique<WildCard>(WildSymbol::Wild));
-            cards_.push_back(
-                std::make_unique<WildCard>(WildSymbol::WildDrawFour)
-            );
+            cards_.push_back(std::make_unique<WildCard>(WildSymbol::WildDrawFour
+            ));
         }
         shuffle();
     }
