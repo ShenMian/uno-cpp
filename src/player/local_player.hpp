@@ -6,6 +6,15 @@
 #include "../button.hpp"
 #include "player.hpp"
 
+constexpr Color PICKER_COLORS[] =
+    {Color::Red, Color::Green, Color::Blue, Color::Yellow};
+constexpr sf::Color PICKER_SFML_COLORS[] = {
+    sf::Color(207, 87, 60),
+    sf::Color(70, 130, 50),
+    sf::Color(79, 143, 186),
+    sf::Color(222, 158, 65),
+};
+
 class LocalPlayer: public Player {
   public:
     LocalPlayer(
