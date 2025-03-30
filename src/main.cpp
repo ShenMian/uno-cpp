@@ -9,6 +9,8 @@ int main() {
 
     State state(window);
 
+    Audio::instance();
+
     std::thread thread([&]() {
         while (window.isOpen()) {
             state.update();

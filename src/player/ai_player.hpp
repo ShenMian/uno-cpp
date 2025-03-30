@@ -5,6 +5,9 @@
 
 #include "player.hpp"
 
+constexpr std::chrono::duration THINKING_DELAY =
+    std::chrono::milliseconds(1500);
+
 /// An AI-controlled player for the UNO game.
 class AiPlayer: public Player {
   public:
@@ -16,11 +19,10 @@ class AiPlayer: public Player {
             if ((*it)->can_play_on(discard_pile.peek_top())) {
                 auto card = std::move(*it);
                 cards_.erase(it);
-                std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+                std::this_thread::sleep_for(THINKING_DELAY);
                 return card;
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         return std::nullopt;
     }
 
