@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <mutex>
 
 #include "../button.hpp"
@@ -111,13 +112,11 @@ class LocalPlayer: public Player {
 
                 // Highlight the hovered card.
                 if (sprites[i].getGlobalBounds().contains(
-                        window.mapPixelToCoords(sf::Mouse::getPosition(window))
+                        get_mouse_position(window)
                     )) {
                     if (!(i + 1 < cards_.size()
                           && sprites[i + 1].getGlobalBounds().contains(
-                              window.mapPixelToCoords(
-                                  sf::Mouse::getPosition(window)
-                              )
+                              get_mouse_position(window)
                           ))) {
                         sprites[i].move({0.0f, -20.0f});
 
@@ -126,6 +125,7 @@ class LocalPlayer: public Player {
                             && sf::Mouse::isButtonPressed(
                                 sf::Mouse::Button::Left
                             )) {
+                            assert(!selected_card_index_.has_value());
                             selected_card_index_ = i;
                         }
                     }
@@ -154,6 +154,10 @@ class LocalPlayer: public Player {
         return std::ranges::any_of(cards_, [&](auto&& card) {
             return card->can_play_on(discard_pile.peek_top());
         });
+    }
+
+    sf::Vector2f get_mouse_position(sf::RenderWindow& window) const {
+        return window.mapPixelToCoords(sf::Mouse::getPosition(window));
     }
 
     Button buttons_[4];
