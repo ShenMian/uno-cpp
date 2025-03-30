@@ -11,10 +11,6 @@ using std::unique_ptr;
 using std::vector;
 
 constexpr float MAX_SPACING = 70.0f;
-constexpr Color PICKER_COLORS[] =
-    {Color::Red, Color::Green, Color::Blue, Color::Yellow};
-constexpr sf::Color PICKER_SFML_COLORS[] =
-    {sf::Color::Red, sf::Color::Green, sf::Color::Blue, sf::Color::Yellow};
 
 enum class Position : uint8_t { North, East, South, West };
 
