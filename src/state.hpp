@@ -5,6 +5,8 @@
 #include <random>
 #include <vector>
 
+#include "SFML/Graphics/Rect.hpp"
+#include "SFML/Graphics/Sprite.hpp"
 #include "audio.hpp"
 #include "card/action_card.hpp"
 #include "card/wild_card.hpp"
@@ -12,6 +14,9 @@
 #include "discard_pile.hpp"
 #include "player/ai_player.hpp"
 #include "player/local_player.hpp"
+
+sf::Texture background_texture("assets/images/background.png");
+sf::Sprite background_sprite(background_texture);
 
 constexpr std::chrono::duration DRAW_CARD_DELAY =
     std::chrono::milliseconds(700);
@@ -25,6 +30,9 @@ class State {
         seed_(std::random_device {}()),
         rng_(seed_),
         deck_(rng_) {
+        sf::FloatRect background_bounds = background_sprite.getGlobalBounds();
+        background_sprite.setOrigin({background_bounds.getCenter().x, background_bounds.getCenter().y});
+
         players_.push_back(std::make_unique<AiPlayer>(Position::North, deck_));
         players_.push_back(std::make_unique<AiPlayer>(Position::East, deck_));
         players_.push_back(
@@ -95,6 +103,10 @@ class State {
     }
 
     void render(sf::RenderWindow& window) const {
+        sf::Vector2u windowSize = window.getSize();
+        background_sprite.setPosition({static_cast<float>(windowSize.x) / 2, static_cast<float>(windowSize.y) / 2});
+        window.draw(background_sprite);
+        
         deck_.render(window);
         discard_pile_.render(window);
         for (size_t i = 0; i < players_.size(); i += 1) {
