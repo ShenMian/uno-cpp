@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <mutex>
-#include <thread>
 
 #include "../button.hpp"
 #include "player.hpp"
@@ -39,7 +38,6 @@ class LocalPlayer: public Player {
     optional<unique_ptr<Card>>
     play_card(const DiscardPile& discard_pile) override {
         if (!has_playable_card(discard_pile)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             return std::nullopt;
         }
         while (!selected_card_index_.has_value())

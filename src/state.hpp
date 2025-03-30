@@ -1,9 +1,11 @@
 #include <cassert>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <random>
 #include <vector>
 
+#include "audio.hpp"
 #include "card/action_card.hpp"
 #include "card/wild_card.hpp"
 #include "deck.hpp"
@@ -11,6 +13,8 @@
 #include "player/ai_player.hpp"
 #include "player/local_player.hpp"
 
+constexpr std::chrono::duration DRAW_CARD_DELAY =
+    std::chrono::milliseconds(700);
 
 enum class Direction : int8_t { Clockwise = 1, CounterClockwise = -1 };
 
@@ -39,21 +43,27 @@ class State {
         auto& player = current_player();
 
         auto card = player.play_card(discard_pile_);
+        Audio::instance().play_place();
         while (!card.has_value()) {
             player.draw_card_from_deck(deck_);
+            Audio::instance().play_slide();
+            std::this_thread::sleep_for(DRAW_CARD_DELAY);
             card = player.play_card(discard_pile_);
+            Audio::instance().play_place();
         }
         if (player.is_hand_empty()) {
             assert(false); // TODO
         }
+
         if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
             wild_card->set_color(player.select_wild_color());
             if (wild_card->symbol() == WildSymbol::WildDrawFour) {
                 next_turn();
                 auto& next_player = current_player();
                 for (uint8_t i = 0; i < 4; i += 1) {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                    std::this_thread::sleep_for(DRAW_CARD_DELAY);
                     next_player.draw_card_from_deck(deck_);
+                    Audio::instance().play_slide();
                 }
             }
         }
@@ -64,10 +74,9 @@ class State {
                     next_turn();
                     auto& next_player = current_player();
                     for (uint8_t i = 0; i < 2; i += 1) {
-                        std::this_thread::sleep_for(
-                            std::chrono::milliseconds(500)
-                        );
+                        std::this_thread::sleep_for(DRAW_CARD_DELAY);
                         next_player.draw_card_from_deck(deck_);
+                        Audio::instance().play_slide();
                     }
                     break;
                 }
@@ -80,6 +89,7 @@ class State {
             }
         }
         next_turn();
+
         assert(card.value()->can_play_on(discard_pile_.peek_top()));
         discard_pile_.push_back(std::move(card.value()));
     }
@@ -136,6 +146,6 @@ class State {
 
     std::vector<std::unique_ptr<Player>> players_;
 
-    Position position_ = Position::West; // Position of the current player
+    Position position_ = Position::South; // Position of the current player
     Direction direction_ = Direction::Clockwise; // Direction of play
 };
