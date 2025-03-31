@@ -3,6 +3,8 @@
 
 #include "state.hpp"
 
+void resize_background(sf::Sprite&, sf::Window&);
+
 int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
@@ -20,11 +22,8 @@ int main() {
 
     sf::Texture background_texture("assets/images/background.png");
     sf::Sprite background_sprite(background_texture);
-    sf::FloatRect background_bounds = background_sprite.getGlobalBounds();
-    background_sprite.setOrigin({
-        background_bounds.size.x / 2,
-        background_bounds.size.y / 2
-    });
+    background_sprite.setOrigin(background_sprite.getLocalBounds().getCenter());
+    resize_background(background_sprite, window);
 
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
@@ -37,21 +36,9 @@ int main() {
                         sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
                     )
                 );
+                resize_background(background_sprite, window);
             }
         }
-
-        sf::Vector2u window_size = window.getSize();
-        float scale_x = static_cast<float>(window_size.x) / background_bounds.size.x;
-        float scale_y = static_cast<float>(window_size.y) / background_bounds.size.y;
-
-        float scale = std::max(scale_x, scale_y);
-
-        background_sprite.setScale(sf::Vector2f(scale, scale));
-
-        background_sprite.setPosition({
-            static_cast<float>(window_size.x) / 2, 
-            static_cast<float>(window_size.y) / 2
-        });
 
         window.clear();
         window.draw(background_sprite);
@@ -60,4 +47,16 @@ int main() {
     }
 
     return 0;
+}
+
+/// Scale the background sprite to fit the window size
+void resize_background(sf::Sprite& background_sprite, sf::Window& window) {
+    const auto window_size = sf::Vector2f(window.getSize());
+    background_sprite.setPosition(window_size / 2.0f);
+    const auto scale = sf::Vector2f(
+        window_size.x / background_sprite.getLocalBounds().size.x,
+        window_size.y / background_sprite.getLocalBounds().size.y
+    );
+    const auto max_scale = std::max(scale.x, scale.y);
+    background_sprite.setScale({max_scale, max_scale});
 }

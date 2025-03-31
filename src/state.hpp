@@ -5,7 +5,6 @@
 #include <random>
 #include <vector>
 
-#include "SFML/Graphics/Rect.hpp"
 #include "audio.hpp"
 #include "card/action_card.hpp"
 #include "card/wild_card.hpp"
@@ -95,7 +94,7 @@ class State {
         discard_pile_.push_back(std::move(card.value()));
     }
 
-    void render(sf::RenderWindow& window) const {        
+    void render(sf::RenderWindow& window) const {
         deck_.render(window);
         discard_pile_.render(window);
         for (size_t i = 0; i < players_.size(); i += 1) {
