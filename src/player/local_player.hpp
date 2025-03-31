@@ -36,7 +36,7 @@ class LocalPlayer: public Player {
                 sf::Vector2f(BUTTON_SIZE, BUTTON_SIZE)
             );
             rectangle->setOrigin(
-                rectangle->getSize() / 2.0f - sf::Vector2f(0.0f, -100.0f)
+                rectangle->getGeometricCenter() - sf::Vector2f(0.0f, -100.0f)
             );
             rectangle->setPosition(sf::Vector2f(render_target.getSize() / 2u));
             rectangle->setFillColor(PICKER_SFML_COLORS[i]);

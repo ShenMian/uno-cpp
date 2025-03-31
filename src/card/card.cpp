@@ -16,7 +16,7 @@ sf::Sprite Card::sprite() const {
                 REGION_SIZE
             );
             sf::Sprite sprite(spritesheet_, region);
-            sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
+            sprite.setOrigin(sprite.getGlobalBounds().getCenter());
             sprite.setScale(sf::Vector2f(CARD_SCALE, CARD_SCALE));
             sprites_.push_back(std::move(sprite));
         }
@@ -32,7 +32,7 @@ sf::Sprite Card::back_sprite() {
         REGION_SIZE
     );
     sf::Sprite sprite(spritesheet_, REGION);
-    sprite.setOrigin(sprite.getGlobalBounds().size / 2.0f);
+    sprite.setOrigin(sprite.getGlobalBounds().getCenter());
     sprite.setScale(sf::Vector2f(CARD_SCALE, CARD_SCALE));
     return sprite;
 }

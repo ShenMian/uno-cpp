@@ -113,7 +113,7 @@ class State {
         const auto player_index = static_cast<int8_t>(position_);
         sf::CircleShape indicator(40.f, 3);
         indicator.setOrigin(
-            indicator.getLocalBounds().size / 2.0f
+            indicator.getLocalBounds().getCenter()
             + sf::Vector2f(0.f, player_index % 2 == 0 ? 200.f : 300.f)
         );
         indicator.setPosition(sf::Vector2f(render_target.getSize()) / 2.0f);
