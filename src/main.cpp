@@ -38,6 +38,21 @@ int main() {
         }
 
         sf::Vector2u windowSize = window.getSize();
+        if (background_bounds.size.x > background_bounds.size.y) {
+            background_sprite.setScale(
+                sf::Vector2f(
+                    windowSize.y / background_bounds.size.y, 
+                    windowSize.y / background_bounds.size.y
+                )
+            );
+        } else {
+            background_sprite.setScale(
+                sf::Vector2f(
+                    windowSize.x / background_bounds.size.x, 
+                    windowSize.x / background_bounds.size.x
+                )
+            );
+        }
         background_sprite.setPosition({static_cast<float>(windowSize.x) / 2, static_cast<float>(windowSize.y) / 2});
 
         window.clear();
