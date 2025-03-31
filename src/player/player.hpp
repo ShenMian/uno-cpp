@@ -30,11 +30,11 @@ class Player {
     ) const {
         switch (position_) {
             case Position::North:
-                render_north(window);
+                render_north_hand(window);
                 break;
             case Position::East:
             case Position::West:
-                render_vertical(window);
+                render_vertical_hand(window);
                 break;
             default:
                 assert(false); // Unreachable.
@@ -43,18 +43,18 @@ class Player {
     }
 
     /// Draw a card from the deck.
-    void draw_card_from_deck(Deck& deck) {
-        auto card = deck.draw().value();
+    void draw_from_deck(Deck& deck) {
+        auto new_card = deck.draw().value();
         cards_.insert(
             std::lower_bound(
                 cards_.begin(),
                 cards_.end(),
-                *card,
+                *new_card,
                 [](const auto& ptr, const auto& value) -> bool {
                     return *ptr < value;
                 }
             ),
-            std::move(card)
+            std::move(new_card)
         );
     }
 
@@ -71,17 +71,17 @@ class Player {
   protected:
     Player(Position position, Deck& deck) : position_(position) {
         for (size_t i = 0; i < 7; i += 1) {
-            draw_card_from_deck(deck);
+            draw_from_deck(deck);
         }
     }
 
     vector<unique_ptr<Card>> cards_;
 
   private:
-    void render_north(sf::RenderTarget& render_target) const {
+    void render_north_hand(sf::RenderTarget& render_target) const {
         assert(position_ == Position::North);
         for (size_t i = 0; i < cards_.size(); i += 1) {
-            auto sprite = Card::back_sprite();
+            auto sprite = Card::get_back_sprite();
 
             const auto spacing = std::min(
                 render_target.getSize().x * 0.5f / cards_.size(),
@@ -98,10 +98,10 @@ class Player {
         }
     }
 
-    void render_vertical(sf::RenderTarget& render_target) const {
+    void render_vertical_hand(sf::RenderTarget& render_target) const {
         assert(position_ == Position::East || position_ == Position::West);
         for (size_t i = 0; i < cards_.size(); i += 1) {
-            auto sprite = Card::back_sprite();
+            auto sprite = Card::get_back_sprite();
 
             float x_position;
             switch (position_) {

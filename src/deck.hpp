@@ -36,7 +36,7 @@ class Deck {
     }
 
     void render(sf::RenderTarget& render_target) const {
-        auto sprite = Card::back_sprite();
+        auto sprite = Card::get_back_sprite();
         sprite.setPosition(
             sf::Vector2f(render_target.getSize()) / 2.0f
             - sf::Vector2f(170.0f, 0.0f)

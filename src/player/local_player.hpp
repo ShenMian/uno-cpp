@@ -71,12 +71,12 @@ class LocalPlayer: public Player {
         const DiscardPile& discard_pile,
         bool is_current_player
     ) const override {
-        render_cards(window, discard_pile, is_current_player);
+        render_hand(window, discard_pile, is_current_player);
         render_color_picker(window);
     }
 
   private:
-    void render_cards(
+    void render_hand(
         sf::RenderWindow& window,
         const DiscardPile& discard_pile,
         bool is_current_player
@@ -142,7 +142,7 @@ class LocalPlayer: public Player {
         if (is_picking_color_) {
             for (int i = 0; i < 4; i += 1) {
                 buttons_[i].render(render_target);
-                if (buttons_[i].is_clicked(render_target)) {
+                if (buttons_[i].is_left_clicked(render_target)) {
                     picked_color_ = PICKER_COLORS[i];
                     is_picking_color_ = false;
                 }

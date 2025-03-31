@@ -9,7 +9,7 @@ int main() {
 
     State state(window);
 
-    Audio::instance();
+    Audio::get();
 
     std::thread thread([&]() {
         while (window.isOpen()) {

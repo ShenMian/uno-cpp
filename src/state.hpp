@@ -43,13 +43,13 @@ class State {
         auto& player = current_player();
 
         auto card = player.play_card(discard_pile_);
-        Audio::instance().play_place();
+        Audio::get().play_random_place_sound();
         while (!card.has_value()) {
-            player.draw_card_from_deck(deck_);
-            Audio::instance().play_slide();
+            player.draw_from_deck(deck_);
+            Audio::get().play_random_slide_sound();
             std::this_thread::sleep_for(DRAW_CARD_DELAY);
             card = player.play_card(discard_pile_);
-            Audio::instance().play_place();
+            Audio::get().play_random_place_sound();
         }
         if (player.is_hand_empty()) {
             assert(false); // TODO
@@ -62,8 +62,8 @@ class State {
                 auto& next_player = current_player();
                 for (uint8_t i = 0; i < 4; i += 1) {
                     std::this_thread::sleep_for(DRAW_CARD_DELAY);
-                    next_player.draw_card_from_deck(deck_);
-                    Audio::instance().play_slide();
+                    next_player.draw_from_deck(deck_);
+                    Audio::get().play_random_slide_sound();
                 }
             }
         }
@@ -75,8 +75,8 @@ class State {
                     auto& next_player = current_player();
                     for (uint8_t i = 0; i < 2; i += 1) {
                         std::this_thread::sleep_for(DRAW_CARD_DELAY);
-                        next_player.draw_card_from_deck(deck_);
-                        Audio::instance().play_slide();
+                        next_player.draw_from_deck(deck_);
+                        Audio::get().play_random_slide_sound();
                     }
                     break;
                 }

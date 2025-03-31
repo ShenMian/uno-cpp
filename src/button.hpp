@@ -13,17 +13,19 @@ class Button {
         );
     }
 
-    bool is_clicked(sf::RenderWindow& window) const {
+    bool is_left_clicked(sf::RenderWindow& window) const {
         return is_hovered(window)
             && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
     }
 
     void render(sf::RenderWindow& window) const {
+        constexpr float HIGHLIGHT_THICKNESS = 4.0f;
+
         if (is_hovered(window)) {
-            shape->setOutlineThickness(4.0f);
+            shape->setOutlineThickness(HIGHLIGHT_THICKNESS);
             shape->setOutlineColor(sf::Color::Yellow);
         } else {
-            shape->setOutlineThickness(4.0f);
+            shape->setOutlineThickness(HIGHLIGHT_THICKNESS);
             shape->setOutlineColor(sf::Color::Black);
         }
         window.draw(*shape);
