@@ -21,7 +21,10 @@ int main() {
     sf::Texture background_texture("assets/images/background.png");
     sf::Sprite background_sprite(background_texture);
     sf::FloatRect background_bounds = background_sprite.getGlobalBounds();
-    background_sprite.setOrigin({background_bounds.getCenter().x, background_bounds.getCenter().y});
+    background_sprite.setOrigin({
+        background_bounds.size.x / 2,
+        background_bounds.size.y / 2
+    });
 
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
@@ -37,23 +40,18 @@ int main() {
             }
         }
 
-        sf::Vector2u windowSize = window.getSize();
-        if (background_bounds.size.x > background_bounds.size.y) {
-            background_sprite.setScale(
-                sf::Vector2f(
-                    windowSize.y / background_bounds.size.y, 
-                    windowSize.y / background_bounds.size.y
-                )
-            );
-        } else {
-            background_sprite.setScale(
-                sf::Vector2f(
-                    windowSize.x / background_bounds.size.x, 
-                    windowSize.x / background_bounds.size.x
-                )
-            );
-        }
-        background_sprite.setPosition({static_cast<float>(windowSize.x) / 2, static_cast<float>(windowSize.y) / 2});
+        sf::Vector2u window_size = window.getSize();
+        float scale_x = static_cast<float>(window_size.x) / background_bounds.size.x;
+        float scale_y = static_cast<float>(window_size.y) / background_bounds.size.y;
+
+        float scale = std::max(scale_x, scale_y);
+
+        background_sprite.setScale(sf::Vector2f(scale, scale));
+
+        background_sprite.setPosition({
+            static_cast<float>(window_size.x) / 2, 
+            static_cast<float>(window_size.y) / 2
+        });
 
         window.clear();
         window.draw(background_sprite);
