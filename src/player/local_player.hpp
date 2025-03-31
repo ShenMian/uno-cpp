@@ -17,8 +17,8 @@ class LocalPlayer: public Player {
     ) :
         Player(position, deck) {}
 
-    optional<unique_ptr<Card>> play_card(const DiscardPile& discard_pile
-    ) override {
+    optional<unique_ptr<Card>>
+    play_card(const DiscardPile& discard_pile) override {
         if (!has_playable_card(discard_pile)) {
             return std::nullopt;
         }
@@ -111,7 +111,6 @@ class LocalPlayer: public Player {
         sprites[card_index].move({0.0f, -20.0f});
         if (cards_[card_index]->can_play_on(discard_pile.peek_top())
             && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-            assert(!selected_card_index_.has_value());
             on_card_left_clicked(card_index);
         }
     }
