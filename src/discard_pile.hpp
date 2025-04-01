@@ -5,7 +5,7 @@
 #include <random>
 #include <vector>
 
-#include "card.hpp"
+#include "card/card.hpp"
 #include "config.hpp"
 
 using std::unique_ptr;
@@ -27,7 +27,6 @@ class DiscardPile {
         std::uniform_real_distribution<float> distrib(-1.0f, 1.0f);
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
-            sprite.setScale({2.0f, 2.0f});
             sprite.setPosition(sf::Vector2f(render_target.getSize()) / 2.0f);
 
             // Generate random offset to make cards look naturally stacked.

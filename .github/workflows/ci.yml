@@ -18,10 +18,21 @@ jobs:
         sudo apt-get update
         sudo apt-get install libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev
 
+    - name: Set up display
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install -y xvfb
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x16 &
+
     - uses: xmake-io/github-action-setup-xmake@v1
 
     - name: Checkout
       uses: actions/checkout@v4
 
     - name: Build
-      run: xmake -y
+      run: xmake --yes
+
+    - name: Run tests
+      if: runner.os != 'Linux'
+      run: xmake test --verbose --workdir=.

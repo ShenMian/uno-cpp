@@ -15,7 +15,10 @@
 xmake -y
 
 # Run (requires build first)
-xmake run
+xmake run -w .
+
+# Test
+xmake test -w .
 
 # Generate compilation database
 xmake project -k compile_commands
