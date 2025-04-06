@@ -50,6 +50,11 @@ int main() {
         window.display();
     }
 
+    // Graceful Shutdown
+    if (update_thread.joinable()) {
+        update_thread.join();
+    }
+
     return 0;
 }
 
