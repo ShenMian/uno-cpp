@@ -6,13 +6,16 @@
 void resize_background(sf::Sprite&, sf::Window&);
 
 int main() {
+    // Game Window Setup
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
 
+    // Game State Initialization
     State state(window);
 
     Audio::get();
-
+    
+    // Start Background Thread for Game Logic Updates
     std::atomic<bool> running{true};
     std::thread update_thread([&]() {
         while (running && window.isOpen()) {
@@ -25,6 +28,7 @@ int main() {
     background_sprite.setOrigin(background_sprite.getLocalBounds().getCenter());
     resize_background(background_sprite, window);
 
+    // Main Game Loop: Handles Events and Renders Game
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
