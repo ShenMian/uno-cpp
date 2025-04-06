@@ -13,7 +13,7 @@
 #include "card/wild_card.hpp"
 
 using std::optional;
-using std::unique_ptr;
+using CardPtr = std::unique_ptr<Card>;
 using std::vector;
 
 /// A deck of UNO cards.
@@ -26,7 +26,7 @@ class Deck {
     }
 
     /// Draws a card from the deck.
-    optional<unique_ptr<Card>> draw() noexcept {
+    optional<CardPtr> draw() noexcept {
         if (cards_.empty()) {
             initialize_cards();
         }

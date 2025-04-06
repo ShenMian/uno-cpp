@@ -1,14 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include <thread>
+
 #include "state.hpp"
 
 void resize_background(sf::Sprite&, sf::Window&);
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode({1536u, 864u}), "UNO");
+    auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
 
     State state(window);
+
     Audio::get();
 
     std::atomic<bool> running{true};
@@ -26,11 +28,14 @@ int main() {
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                running = false;
                 window.close();
             }
             if (auto resized = event->getIf<sf::Event::Resized>()) {
-                window.setView(sf::View(sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))));
+                window.setView(
+                    sf::View(
+                        sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
+                    )
+                );
                 resize_background(background_sprite, window);
             }
         }
@@ -41,9 +46,6 @@ int main() {
         window.display();
     }
 
-    if (update_thread.joinable()) {
-        update_thread.join();
-    }
     return 0;
 }
 
