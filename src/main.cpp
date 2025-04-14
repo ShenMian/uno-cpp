@@ -2,13 +2,21 @@
 #include <thread>
 
 #include "state.hpp"
+#include "card/card.hpp"
+#include <iostream>
 
 void resize_background(sf::Sprite&, sf::Window&);
+
 
 int main() {
     // Game Window Setup
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
+
+    if (!Card::init_texture("assets/images/cards.png")) {
+        std::cerr << "Failed to load card atlas texture!" << std::endl;
+        return 1;  // Exit early if loading failed
+    }
 
     // Game State Initialization
     State state(window);

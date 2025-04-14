@@ -30,6 +30,7 @@ class Card {
 
     /// Returns a sprite representing the back of the card.
     static sf::Sprite get_back_sprite();
+    static bool init_texture(const std::string& path);
 
   private:
     static sf::Texture atlas_texture_;
