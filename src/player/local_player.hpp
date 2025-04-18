@@ -59,6 +59,8 @@ class LocalPlayer: public Player {
         sprites.reserve(cards_.size());
 
         std::lock_guard lock(cards_mutex_);
+        int hovered_card_index = -1;
+
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
 
@@ -79,8 +81,7 @@ class LocalPlayer: public Player {
         for (size_t i = 0; i < cards_.size(); i += 1) {
             if (is_current_player) {
                 // Dim the cards that cannot be played.
-                if (!is_current_player
-                    || !cards_[i]->can_play_on(discard_pile.peek_top())) {
+                if (!cards_[i]->can_play_on(discard_pile.peek_top())) {
                     sprites[i].setColor(DIM_COLOR);
                 }
 
@@ -93,13 +94,22 @@ class LocalPlayer: public Player {
                               get_mouse_position(window)
                           ))) {
                         on_card_hovered(i, discard_pile, sprites);
+                        hovered_card_index = static_cast<int>(i);
                     }
                 }
             } else {
                 sprites[i].setColor(DIM_COLOR);
             }
 
-            window.draw(sprites[i]);
+            // Draw all not hovered cards first.
+            if (i != hovered_card_index) {
+                window.draw(sprites[i]);
+            }
+        }
+
+        // Draw the hovered card on top of the others.
+        if (hovered_card_index != -1) {
+            window.draw(sprites[hovered_card_index]);
         }
     }
 
