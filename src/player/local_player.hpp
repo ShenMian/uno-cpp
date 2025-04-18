@@ -89,13 +89,6 @@ class LocalPlayer: public Player {
                 if (sprites[i].getGlobalBounds().contains(
                         get_mouse_position(window)
                     )) {
-                    // if (!(i + 1 < cards_.size()
-                    //       && sprites[i + 1].getGlobalBounds().contains(
-                    //           get_mouse_position(window)
-                    //       ))) {
-                    //     on_card_hovered(i, discard_pile, sprites);
-                    //     hovered_card_index = static_cast<int>(i);
-                    // }
                     if (i + 1 < cards_.size()
                         && sprites[i].getGlobalBounds().contains(
                             get_mouse_position(window))
