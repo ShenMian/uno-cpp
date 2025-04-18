@@ -8,6 +8,8 @@
 #include "../button.hpp"
 #include "player.hpp"
 
+int hovered_card_index = -1;
+
 class LocalPlayer: public Player {
   public:
     LocalPlayer(
@@ -59,8 +61,6 @@ class LocalPlayer: public Player {
         sprites.reserve(cards_.size());
 
         std::lock_guard lock(cards_mutex_);
-        int hovered_card_index = -1;
-
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
 
@@ -89,16 +89,38 @@ class LocalPlayer: public Player {
                 if (sprites[i].getGlobalBounds().contains(
                         get_mouse_position(window)
                     )) {
-                    if (!(i + 1 < cards_.size()
-                          && sprites[i + 1].getGlobalBounds().contains(
-                              get_mouse_position(window)
-                          ))) {
-                        on_card_hovered(i, discard_pile, sprites);
+                    // if (!(i + 1 < cards_.size()
+                    //       && sprites[i + 1].getGlobalBounds().contains(
+                    //           get_mouse_position(window)
+                    //       ))) {
+                    //     on_card_hovered(i, discard_pile, sprites);
+                    //     hovered_card_index = static_cast<int>(i);
+                    // }
+                    if (i + 1 < cards_.size()
+                        && sprites[i].getGlobalBounds().contains(
+                            get_mouse_position(window))
+                        && sprites[i + 1].getGlobalBounds().contains(
+                            get_mouse_position(window))) {
+                        if (i != hovered_card_index) {
+                            hovered_card_index = static_cast<int>(i + 1);
+                        }
+                    } else if (sprites[i].getGlobalBounds().contains(
+                        get_mouse_position(window))
+                        && !sprites[i + 1].getGlobalBounds().contains(
+                            get_mouse_position(window))
+                        && !sprites[i - 1].getGlobalBounds().contains(
+                            get_mouse_position(window))) {
                         hovered_card_index = static_cast<int>(i);
                     }
                 }
             } else {
                 sprites[i].setColor(DIM_COLOR);
+            }
+
+            if (hovered_card_index != -1
+                && !sprites[hovered_card_index].getGlobalBounds().contains(
+                    get_mouse_position(window))) {
+                hovered_card_index = -1;
             }
 
             // Draw all not hovered cards first.
@@ -109,6 +131,7 @@ class LocalPlayer: public Player {
 
         // Draw the hovered card on top of the others.
         if (hovered_card_index != -1) {
+            on_card_hovered(hovered_card_index, discard_pile, sprites);
             window.draw(sprites[hovered_card_index]);
         }
     }
