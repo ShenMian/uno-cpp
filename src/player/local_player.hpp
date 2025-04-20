@@ -4,6 +4,7 @@
 #include <cassert>
 #include <memory>
 #include <mutex>
+#include <optional>
 
 #include "../button.hpp"
 #include "player.hpp"
@@ -76,30 +77,50 @@ class LocalPlayer: public Player {
             sprites.push_back(std::move(sprite));
         }
 
-        for (size_t i = 0; i < cards_.size(); i += 1) {
-            if (is_current_player) {
-                // Dim the cards that cannot be played.
-                if (!is_current_player
-                    || !cards_[i]->can_play_on(discard_pile.peek_top())) {
-                    sprites[i].setColor(DIM_COLOR);
-                }
-
-                // Highlight the hovered card.
+        // Update the hovered card index.
+        if (hovered_card_index_.has_value()) {
+            if (!sprites[hovered_card_index_.value()]
+                     .getGlobalBounds()
+                     .contains(get_mouse_position(window))) {
+                hovered_card_index_ = std::nullopt;
+            }
+        } else {
+            for (size_t i = 0; i < cards_.size(); i += 1) {
                 if (sprites[i].getGlobalBounds().contains(
                         get_mouse_position(window)
+                    )
+                    && !(
+                        i + 1 < cards_.size()
+                        && sprites[i + 1].getGlobalBounds().contains(
+                            get_mouse_position(window)
+                        )
                     )) {
-                    if (!(i + 1 < cards_.size()
-                          && sprites[i + 1].getGlobalBounds().contains(
-                              get_mouse_position(window)
-                          ))) {
-                        on_card_hovered(i, discard_pile, sprites);
-                    }
+                    hovered_card_index_ = i;
                 }
-            } else {
+            }
+        }
+
+        // Draw the cards in the hand.
+        for (size_t i = 0; i < cards_.size(); i += 1) {
+            // Dim the cards that cannot be played.
+            if (!is_current_player
+                || !cards_[i]->can_play_on(discard_pile.peek_top())) {
                 sprites[i].setColor(DIM_COLOR);
             }
 
+            // Skip drawing the hovered card.
+            if (hovered_card_index_.has_value()
+                && i == hovered_card_index_.value()) {
+                continue;
+            }
+
             window.draw(sprites[i]);
+        }
+
+        // Draw the hovered card on top of the others.
+        if (hovered_card_index_.has_value()) {
+            on_card_hovered(hovered_card_index_.value(), discard_pile, sprites);
+            window.draw(sprites[hovered_card_index_.value()]);
         }
     }
 
@@ -108,6 +129,7 @@ class LocalPlayer: public Player {
         const DiscardPile& discard_pile,
         std::vector<sf::Sprite>& sprites
     ) const {
+        assert(hovered_card_index_.has_value());
         sprites[card_index].move({0.0f, -20.0f});
         if (cards_[card_index]->can_play_on(discard_pile.peek_top())
             && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
@@ -164,5 +186,6 @@ class LocalPlayer: public Player {
 
     mutable bool is_picking_color_ = false;
     mutable Color picked_color_;
+    mutable optional<size_t> hovered_card_index_ = std::nullopt;
     mutable optional<size_t> selected_card_index_ = std::nullopt;
 };
