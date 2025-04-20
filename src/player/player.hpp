@@ -87,10 +87,11 @@ class Player {
                 render_target.getSize().x * 0.5f / cards_.size(),
                 MAX_SPACING
             );
-            const auto width = sprite.getGlobalBounds().size.x - spacing
+            const auto total_width = sprite.getGlobalBounds().size.x - spacing
                 + (cards_.size() - 1) * spacing;
             sprite.setPosition(
-                {render_target.getSize().x / 2.0f - width / 2.0f + i * spacing,
+                {render_target.getSize().x / 2.0f - total_width / 2.0f
+                     + i * spacing,
                  sprite.getGlobalBounds().size.y / 2.0f}
             );
 
@@ -123,11 +124,12 @@ class Player {
                 render_target.getSize().y * 0.5f / cards_.size(),
                 MAX_SPACING
             );
-            const auto height = sprite.getGlobalBounds().size.x - spacing
+            const auto total_height = sprite.getGlobalBounds().size.x - spacing
                 + (cards_.size() - 1) * spacing;
             sprite.setPosition(
                 {x_position,
-                 render_target.getSize().y / 2.0f - height / 2.0f + i * spacing}
+                 render_target.getSize().y / 2.0f - total_height / 2.0f
+                     + i * spacing}
             );
 
             render_target.draw(sprite);

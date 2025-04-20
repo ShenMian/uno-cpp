@@ -67,10 +67,10 @@ class LocalPlayer: public Player {
                 window.getSize().x * 0.5f / cards_.size(),
                 MAX_SPACING
             );
-            const auto width = sprite.getGlobalBounds().size.x - spacing
+            const auto total_width = sprite.getGlobalBounds().size.x - spacing
                 + (cards_.size() - 1) * spacing;
             sprite.setPosition(
-                {window.getSize().x / 2.0f - width / 2.0f + i * spacing,
+                {window.getSize().x / 2.0f - total_width / 2.0f + i * spacing,
                  window.getSize().y - sprite.getGlobalBounds().size.y / 2.0f}
             );
 
