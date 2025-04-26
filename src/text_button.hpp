@@ -39,7 +39,7 @@ class TextButton: public Button {
   private:
     std::unique_ptr<sf::Shape> create_shape(sf::Color button_color) const {
         auto shape =
-            std::make_unique<sf::RectangleShape>(sf::Vector2f(200.f, 80.f));
+            std::make_unique<sf::RectangleShape>(sf::Vector2f(300.f, 80.f));
         shape->setFillColor(button_color);
         shape->setOrigin(shape->getLocalBounds().getCenter());
         return shape;

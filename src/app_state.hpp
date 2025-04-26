@@ -1,3 +1,3 @@
 #pragma once
 
-enum class AppState { StartMenu, Gameplay, Exit };
+enum class AppState { StartMenu, Gameplay, GameOver, Exit };

@@ -3,6 +3,8 @@
 #include <thread>
 
 #include "app_state.hpp"
+#include "game_over_menu.hpp"
+#include "player/player.hpp"
 #include "start_menu.hpp"
 #include "state.hpp"
 
@@ -15,6 +17,7 @@ int main() {
     AppState app_state = AppState::StartMenu;
 
     std::unique_ptr<StartMenu> start_menu = std::make_unique<StartMenu>(window);
+    std::unique_ptr<GameOverMenu> game_over_menu;
     std::unique_ptr<State> state;
     std::unique_ptr<std::thread> gameplay_thread;
 
@@ -50,6 +53,7 @@ int main() {
                     start_menu.reset();
                 }
                 break;
+
             case AppState::Gameplay:
                 if (state == nullptr) {
                     state = std::make_unique<State>(window);
@@ -66,10 +70,28 @@ int main() {
                 state->render(window);
 
                 if (app_state != AppState::Gameplay) {
-                    state.reset();
+                    // Used when initializing the `GameOver` state
+                    // state.reset();
                     gameplay_thread.reset();
                 }
                 break;
+
+            case AppState::GameOver:
+                if (game_over_menu == nullptr) {
+                    game_over_menu = std::make_unique<GameOverMenu>(
+                        window,
+                        state->position() == Position::South
+                    );
+                }
+
+                app_state = game_over_menu->update(window);
+                game_over_menu->render(window);
+
+                if (app_state != AppState::GameOver) {
+                    game_over_menu.reset();
+                }
+                break;
+
             case AppState::Exit:
                 window.close();
                 break;

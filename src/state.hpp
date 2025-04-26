@@ -55,7 +55,7 @@ class State {
             Audio::get().play_random_place_sound();
         }
         if (player.is_hand_empty()) {
-            return AppState::StartMenu;
+            return AppState::GameOver;
         }
 
         if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
@@ -111,6 +111,10 @@ class State {
         }
         // TODO: Add direction indicators
         render_player_indicator(window);
+    }
+
+    Position position() const {
+        return position_;
     }
 
   private:
