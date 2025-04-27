@@ -45,6 +45,9 @@ class State {
 
     AppState update() {
         auto& player = current_player();
+        if (player.is_hand_empty()) {
+            return AppState::GameOver;
+        }
 
         while (!player.has_playable_card(discard_pile_)) {
             player.draw_from_deck(deck_);

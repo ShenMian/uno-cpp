@@ -20,7 +20,7 @@ std::unique_ptr<StartMenu> start_menu;
 std::unique_ptr<GameOverMenu> game_over_menu;
 
 std::unique_ptr<State> state;
-std::unique_ptr<std::thread> gameplay_thread;
+std::unique_ptr<std::jthread> gameplay_thread;
 
 std::atomic<AppState> app_state = AppState::StartMenu;
 std::atomic<AppState> previous_app_state = AppState::None;
@@ -98,11 +98,12 @@ void on_enter(AppState app_state_entered, sf::RenderWindow& window) {
             assert(state == nullptr);
             assert(gameplay_thread == nullptr);
             state = std::make_unique<State>(window);
-            gameplay_thread = std::make_unique<std::thread>([&]() {
-                while (true) {
-                    app_state = state->update();
-                }
-            });
+            gameplay_thread =
+                std::make_unique<std::jthread>([&](std::stop_token stop_token) {
+                    while (!stop_token.stop_requested()) {
+                        app_state = state->update();
+                    }
+                });
             break;
         case AppState::GameOver:
             assert(game_over_menu == nullptr);
@@ -121,8 +122,8 @@ void on_exit(AppState app_state_exited, sf::RenderWindow& window) {
             break;
         case AppState::Gameplay:
             is_player_won = state->position() == Position::South;
-            state.reset();
             gameplay_thread.reset();
+            state.reset();
             break;
         case AppState::GameOver:
             game_over_menu.reset();
