@@ -43,7 +43,7 @@ class Player {
     }
 
     /// Draw a card from the deck.
-    void draw_from_deck(Deck& deck) {
+    virtual void draw_from_deck(Deck& deck) {
         auto new_card = deck.draw().value();
         cards_.insert(
             std::lower_bound(

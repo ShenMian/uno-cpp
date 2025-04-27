@@ -50,6 +50,11 @@ class LocalPlayer: public Player {
         }
     }
 
+    virtual void draw_from_deck(Deck& deck) override {
+        std::lock_guard lock(cards_mutex_);
+        Player::draw_from_deck(deck);
+    }
+
   private:
     void render_hand(
         sf::RenderWindow& window,
