@@ -46,5 +46,4 @@ class TextButton: public Button {
     }
 
     sf::Text text_;
-    std::unique_ptr<sf::Shape> shape_;
 };

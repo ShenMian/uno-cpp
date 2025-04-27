@@ -18,14 +18,6 @@ class Button {
             && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
     }
 
-    virtual void set_position(sf::Vector2f position) {
-        shape_->setPosition(position);
-    }
-
-    const sf::Shape& shape() const {
-        return *shape_;
-    }
-
     virtual void render(sf::RenderWindow& window) const {
         constexpr float HIGHLIGHT_THICKNESS = 4.0f;
 
@@ -37,6 +29,14 @@ class Button {
             shape_->setOutlineColor(sf::Color::Black);
         }
         window.draw(*shape_);
+    }
+
+    virtual void set_position(sf::Vector2f position) {
+        shape_->setPosition(position);
+    }
+
+    const sf::Shape& shape() const {
+        return *shape_;
     }
 
   private:

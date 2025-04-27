@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cassert>
 #include <chrono>
 #include <cstdint>
@@ -5,6 +7,7 @@
 #include <random>
 #include <vector>
 
+#include "app_state.hpp"
 #include "audio.hpp"
 #include "card/action_card.hpp"
 #include "card/wild_card.hpp"
@@ -39,7 +42,7 @@ class State {
         discard_pile_.push_back(std::move(card));
     }
 
-    void update() {
+    AppState update() {
         auto& player = current_player();
 
         auto card = player.play_card(discard_pile_);
@@ -52,7 +55,7 @@ class State {
             Audio::get().play_random_place_sound();
         }
         if (player.is_hand_empty()) {
-            assert(false); // TODO
+            return AppState::StartMenu;
         }
 
         if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
@@ -92,6 +95,8 @@ class State {
 
         assert(card.value()->can_play_on(discard_pile_.peek_top()));
         discard_pile_.push_back(std::move(card.value()));
+
+        return AppState::Gameplay;
     }
 
     void render(sf::RenderWindow& window) const {

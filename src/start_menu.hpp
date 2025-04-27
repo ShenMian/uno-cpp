@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-#include "audio.hpp"
+#include "app_state.hpp"
 #include "button.hpp"
 #include "text_button.hpp"
 
@@ -42,17 +42,14 @@ class StartMenu {
         );
     }
 
-    void handle_events(sf::RenderWindow& window) {
+    AppState update(sf::RenderWindow& window) {
         if (start_button_->is_left_clicked(window)) {
-            Audio::get().play_random_place_sound();
-            should_start_game_ = true;
+            return AppState::Gameplay;
         }
         if (exit_button_->is_left_clicked(window)) {
-            Audio::get().play_random_slide_sound();
-            should_exit_game_ = true;
-            // Note: We don't directly close the window here anymore
-            // This allows main.cpp to handle proper cleanup
+            return AppState::Exit;
         }
+        return AppState::StartMenu;
     }
 
     void render(sf::RenderWindow& window) {
@@ -72,24 +69,9 @@ class StartMenu {
         exit_button_->render(window);
     }
 
-    bool should_start_game() const {
-        return should_start_game_;
-    }
-
-    bool should_exit_game() const {
-        return should_exit_game_;
-    }
-
-    void reset() {
-        should_start_game_ = false;
-        should_exit_game_ = false;
-    }
-
   private:
     std::unique_ptr<Button> start_button_;
     std::unique_ptr<Button> exit_button_;
     sf::Font font_;
     std::unique_ptr<sf::Text> title_text_;
-    bool should_start_game_ = false;
-    bool should_exit_game_ = false;
 };
