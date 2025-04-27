@@ -26,6 +26,7 @@ class LocalPlayer: public Player {
         std::lock_guard lock(cards_mutex_);
         auto card = std::move(cards_[selected_card_index_.value()]);
         cards_.erase(std::next(cards_.begin(), selected_card_index_.value()));
+        selected_card_index_ = std::nullopt;
 
         assert(card->can_play_on(discard_pile.peek_top()));
         return card;
@@ -55,10 +56,11 @@ class LocalPlayer: public Player {
         const DiscardPile& discard_pile,
         bool is_current_player
     ) const {
+        std::lock_guard lock(cards_mutex_);
+
         std::vector<sf::Sprite> sprites;
         sprites.reserve(cards_.size());
 
-        std::lock_guard lock(cards_mutex_);
         for (size_t i = 0; i < cards_.size(); i += 1) {
             auto sprite = cards_[i]->sprite();
 
@@ -77,25 +79,17 @@ class LocalPlayer: public Player {
         }
 
         // Update the hovered card index.
-        if (hovered_card_index_.has_value()) {
-            if (!sprites[hovered_card_index_.value()]
-                     .getGlobalBounds()
-                     .contains(get_mouse_position(window))) {
-                hovered_card_index_ = std::nullopt;
-            }
-        } else {
-            for (size_t i = 0; i < cards_.size(); i += 1) {
-                if (sprites[i].getGlobalBounds().contains(
+        hovered_card_index_ = std::nullopt;
+        for (size_t i = 0; i < cards_.size(); i += 1) {
+            if (sprites[i].getGlobalBounds().contains(get_mouse_position(window)
+                )
+                && !(
+                    i + 1 < cards_.size()
+                    && sprites[i + 1].getGlobalBounds().contains(
                         get_mouse_position(window)
                     )
-                    && !(
-                        i + 1 < cards_.size()
-                        && sprites[i + 1].getGlobalBounds().contains(
-                            get_mouse_position(window)
-                        )
-                    )) {
-                    hovered_card_index_ = i;
-                }
+                )) {
+                hovered_card_index_ = i;
             }
         }
 

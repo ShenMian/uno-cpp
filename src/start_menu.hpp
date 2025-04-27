@@ -40,8 +40,12 @@ class StartMenu {
 
     AppState update(sf::RenderWindow& window) {
         if (start_button_->is_left_clicked(window)) {
+            while (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                ;
             return AppState::Gameplay;
         } else if (exit_button_->is_left_clicked(window)) {
+            while (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                ;
             return AppState::Exit;
         }
         return AppState::StartMenu;

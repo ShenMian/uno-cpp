@@ -36,8 +36,9 @@ class State {
         players_.push_back(std::make_unique<AiPlayer>(Position::West, deck_));
 
         auto card = deck_.draw().value();
-        if (auto wild_card = dynamic_cast<WildCard*>(card.get())) {
-            wild_card->set_color(current_player().select_wild_color());
+        while (dynamic_cast<WildCard*>(card.get())) {
+            discard_pile_.push_back(std::move(card));
+            card = deck_.draw().value();
         }
         discard_pile_.push_back(std::move(card));
     }

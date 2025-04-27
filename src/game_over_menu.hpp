@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+#include "SFML/Window/Mouse.hpp"
 #include "app_state.hpp"
 #include "text_button.hpp"
 
@@ -42,9 +43,13 @@ class GameOverMenu {
     }
 
     AppState update(sf::RenderWindow& window) {
-        if (menu_button_->is_hovered(window)) {
+        if (menu_button_->is_left_clicked(window)) {
+            while (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                ;
             return AppState::StartMenu;
-        } else if (exit_button_->is_hovered(window)) {
+        } else if (exit_button_->is_left_clicked(window)) {
+            while (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                ;
             return AppState::Exit;
         }
         return AppState::GameOver;

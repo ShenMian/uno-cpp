@@ -60,9 +60,6 @@ class Player {
 
     bool has_playable_card(const DiscardPile& discard_pile) const {
         return std::ranges::any_of(cards_, [&](auto& card) {
-            if (dynamic_cast<WildCard*>(card.get())) {
-                return true;
-            }
             return card->can_play_on(discard_pile.peek_top());
         });
     }

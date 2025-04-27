@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <atomic>
+#include <cassert>
+#include <cstdlib>
 #include <memory>
 #include <thread>
 
@@ -9,20 +11,24 @@
 #include "start_menu.hpp"
 #include "state.hpp"
 
+void on_enter(AppState, sf::RenderWindow&);
+void on_exit(AppState, sf::RenderWindow&);
 void resize_background(sf::Sprite&, sf::Window&);
+
+std::unique_ptr<StartMenu> start_menu;
+
+std::unique_ptr<GameOverMenu> game_over_menu;
+
+std::unique_ptr<State> state;
+std::unique_ptr<std::thread> gameplay_thread;
+
+std::atomic<AppState> app_state = AppState::StartMenu;
+std::atomic<AppState> previous_app_state = AppState::None;
+bool is_player_won;
 
 int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
-
-    std::atomic<AppState> app_state = AppState::StartMenu;
-
-    std::unique_ptr<StartMenu> start_menu = std::make_unique<StartMenu>(window);
-
-    std::unique_ptr<GameOverMenu> game_over_menu;
-
-    std::unique_ptr<State> state;
-    std::unique_ptr<std::thread> gameplay_thread;
 
     sf::Texture background_texture("assets/images/background.png");
     sf::Sprite background_sprite(background_texture);
@@ -32,16 +38,21 @@ int main() {
     while (window.isOpen()) {
         while (const auto event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                window.close();
+                app_state = AppState::Exit;
             }
             if (auto resized = event->getIf<sf::Event::Resized>()) {
-                window.setView(
-                    sf::View(
-                        sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
-                    )
-                );
+                window.setView(sf::View(
+                    sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
+                ));
                 resize_background(background_sprite, window);
             }
+        }
+
+        const auto previous_state =
+            previous_app_state.exchange(app_state.load());
+        if (previous_state != app_state) {
+            on_exit(previous_state, window);
+            on_enter(app_state, window);
         }
 
         window.clear();
@@ -51,52 +62,19 @@ int main() {
             case AppState::StartMenu:
                 app_state = start_menu->update(window);
                 start_menu->render(window);
-
-                if (app_state != AppState::StartMenu) {
-                    start_menu.reset();
-                }
                 break;
 
             case AppState::Gameplay:
-                if (state == nullptr) {
-                    state = std::make_unique<State>(window);
-                }
-                if (gameplay_thread == nullptr) {
-                    gameplay_thread = std::make_unique<std::thread>([&]() {
-                        while (app_state == AppState::Gameplay) {
-                            app_state = state->update();
-                        }
-                    });
-                    // gameplay_thread->detach();
-                }
-
                 state->render(window);
-
-                if (app_state != AppState::Gameplay) {
-                    // Used when initializing the `GameOver` state
-                    // state.reset();
-                    gameplay_thread.reset();
-                }
                 break;
 
             case AppState::GameOver:
-                if (game_over_menu == nullptr) {
-                    game_over_menu = std::make_unique<GameOverMenu>(
-                        window,
-                        state->position() == Position::South
-                    );
-                }
-
                 app_state = game_over_menu->update(window);
                 game_over_menu->render(window);
-
-                if (app_state != AppState::GameOver) {
-                    game_over_menu.reset();
-                }
                 break;
 
-            case AppState::Exit:
-                window.close();
+            default:
+                assert(false); // Unreachable.
                 break;
         }
 
@@ -104,6 +82,53 @@ int main() {
     }
 
     return 0;
+}
+
+void on_enter(AppState app_state_entered, sf::RenderWindow& window) {
+    switch (app_state_entered) {
+        case AppState::StartMenu:
+            assert(start_menu == nullptr);
+            start_menu = std::make_unique<StartMenu>(window);
+            break;
+        case AppState::Gameplay:
+            assert(state == nullptr);
+            assert(gameplay_thread == nullptr);
+            state = std::make_unique<State>(window);
+            gameplay_thread = std::make_unique<std::thread>([&]() {
+                while (app_state == AppState::Gameplay) {
+                    app_state = state->update();
+                }
+            });
+            break;
+        case AppState::GameOver:
+            assert(game_over_menu == nullptr);
+            game_over_menu =
+                std::make_unique<GameOverMenu>(window, is_player_won);
+            break;
+        case AppState::Exit:
+            window.close();
+            break;
+        default:
+            break;
+    }
+}
+
+void on_exit(AppState app_state_exited, sf::RenderWindow& window) {
+    switch (app_state_exited) {
+        case AppState::StartMenu:
+            start_menu.reset();
+            break;
+        case AppState::Gameplay:
+            is_player_won = state->position() == Position::South;
+            state.reset();
+            gameplay_thread.reset();
+            break;
+        case AppState::GameOver:
+            game_over_menu.reset();
+            break;
+        default:
+            break;
+    }
 }
 
 /// Scale the background sprite to fit the window size
