@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <atomic>
 #include <memory>
 #include <thread>
 
@@ -14,10 +15,12 @@ int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1536u, 864u}), "UNO");
     window.setFramerateLimit(144);
 
-    AppState app_state = AppState::StartMenu;
+    std::atomic<AppState> app_state = AppState::StartMenu;
 
     std::unique_ptr<StartMenu> start_menu = std::make_unique<StartMenu>(window);
+
     std::unique_ptr<GameOverMenu> game_over_menu;
+
     std::unique_ptr<State> state;
     std::unique_ptr<std::thread> gameplay_thread;
 
@@ -60,7 +63,7 @@ int main() {
                 }
                 if (gameplay_thread == nullptr) {
                     gameplay_thread = std::make_unique<std::thread>([&]() {
-                        while (window.isOpen()) {
+                        while (app_state == AppState::Gameplay) {
                             app_state = state->update();
                         }
                     });

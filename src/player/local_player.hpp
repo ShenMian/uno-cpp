@@ -18,17 +18,16 @@ class LocalPlayer: public Player {
     ) :
         Player(position, deck) {}
 
-    optional<unique_ptr<Card>>
-    play_card(const DiscardPile& discard_pile) override {
-        if (!has_playable_card(discard_pile)) {
-            return std::nullopt;
-        }
+    unique_ptr<Card> play_card(const DiscardPile& discard_pile) override {
+        selected_card_index_ = std::nullopt;
         while (!selected_card_index_.has_value())
             ;
+
         std::lock_guard lock(cards_mutex_);
         auto card = std::move(cards_[selected_card_index_.value()]);
         cards_.erase(std::next(cards_.begin(), selected_card_index_.value()));
-        selected_card_index_ = std::nullopt;
+
+        assert(card->can_play_on(discard_pile.peek_top()));
         return card;
     }
 
@@ -170,12 +169,6 @@ class LocalPlayer: public Player {
                 is_picking_color_ = false;
             }
         }
-    }
-
-    bool has_playable_card(const DiscardPile& discard_pile) const {
-        return std::ranges::any_of(cards_, [&](auto& card) {
-            return card->can_play_on(discard_pile.peek_top());
-        });
     }
 
     sf::Vector2f get_mouse_position(sf::RenderWindow& window) const {

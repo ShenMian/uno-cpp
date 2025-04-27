@@ -19,7 +19,7 @@ class Player {
   public:
     virtual ~Player() = default;
     /// Play a card from the player's hand.
-    virtual optional<unique_ptr<Card>> play_card(const DiscardPile&) = 0;
+    virtual unique_ptr<Card> play_card(const DiscardPile&) = 0;
     /// Choose a color for a Wild card.
     virtual Color select_wild_color() const = 0;
 
@@ -56,6 +56,15 @@ class Player {
             ),
             std::move(new_card)
         );
+    }
+
+    bool has_playable_card(const DiscardPile& discard_pile) const {
+        return std::ranges::any_of(cards_, [&](auto& card) {
+            if (dynamic_cast<WildCard*>(card.get())) {
+                return true;
+            }
+            return card->can_play_on(discard_pile.peek_top());
+        });
     }
 
     /// Returns true if the player has no cards left in their hand.

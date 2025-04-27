@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 #include <thread>
 
@@ -13,8 +14,7 @@ class AiPlayer: public Player {
   public:
     AiPlayer(Position position, Deck& deck) : Player(position, deck) {}
 
-    optional<unique_ptr<Card>>
-    play_card(const DiscardPile& discard_pile) override {
+    unique_ptr<Card> play_card(const DiscardPile& discard_pile) override {
         for (auto it = cards_.begin(); it != cards_.end(); ++it) {
             if ((*it)->can_play_on(discard_pile.peek_top())) {
                 auto card = std::move(*it);
@@ -23,7 +23,8 @@ class AiPlayer: public Player {
                 return card;
             }
         }
-        return std::nullopt;
+        assert(false); // Unreachable.
+        return nullptr;
     }
 
     Color select_wild_color() const override {

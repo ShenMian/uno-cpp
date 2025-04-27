@@ -41,8 +41,7 @@ class StartMenu {
     AppState update(sf::RenderWindow& window) {
         if (start_button_->is_left_clicked(window)) {
             return AppState::Gameplay;
-        }
-        if (exit_button_->is_left_clicked(window)) {
+        } else if (exit_button_->is_left_clicked(window)) {
             return AppState::Exit;
         }
         return AppState::StartMenu;

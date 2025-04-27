@@ -45,20 +45,20 @@ class State {
     AppState update() {
         auto& player = current_player();
 
-        auto card = player.play_card(discard_pile_);
-        Audio::get().play_random_place_sound();
-        while (!card.has_value()) {
+        while (!player.has_playable_card(discard_pile_)) {
             player.draw_from_deck(deck_);
             Audio::get().play_random_slide_sound();
             std::this_thread::sleep_for(DRAW_CARD_DELAY);
-            card = player.play_card(discard_pile_);
-            Audio::get().play_random_place_sound();
         }
+
+        auto card = player.play_card(discard_pile_);
+        Audio::get().play_random_place_sound();
+
         if (player.is_hand_empty()) {
             return AppState::GameOver;
         }
 
-        if (auto wild_card = dynamic_cast<WildCard*>(card.value().get())) {
+        if (auto wild_card = dynamic_cast<WildCard*>(card.get())) {
             wild_card->set_color(player.select_wild_color());
             if (wild_card->symbol() == WildSymbol::WildDrawFour) {
                 next_turn();
@@ -70,8 +70,7 @@ class State {
                 }
             }
         }
-        if (auto action_card =
-                dynamic_cast<const ActionCard*>(card.value().get())) {
+        if (auto action_card = dynamic_cast<const ActionCard*>(card.get())) {
             switch (action_card->symbol()) {
                 case ActionSymbol::DrawTwo: {
                     next_turn();
@@ -93,8 +92,8 @@ class State {
         }
         next_turn();
 
-        assert(card.value()->can_play_on(discard_pile_.peek_top()));
-        discard_pile_.push_back(std::move(card.value()));
+        assert(card->can_play_on(discard_pile_.peek_top()));
+        discard_pile_.push_back(std::move(card));
 
         return AppState::Gameplay;
     }
