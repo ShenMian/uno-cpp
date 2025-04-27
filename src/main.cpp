@@ -73,6 +73,10 @@ int main() {
                 game_over_menu->render(window);
                 break;
 
+            case AppState::Exit:
+                window.close();
+                break;
+
             default:
                 assert(false); // Unreachable.
                 break;
@@ -95,7 +99,7 @@ void on_enter(AppState app_state_entered, sf::RenderWindow& window) {
             assert(gameplay_thread == nullptr);
             state = std::make_unique<State>(window);
             gameplay_thread = std::make_unique<std::thread>([&]() {
-                while (app_state == AppState::Gameplay) {
+                while (true) {
                     app_state = state->update();
                 }
             });
@@ -104,9 +108,6 @@ void on_enter(AppState app_state_entered, sf::RenderWindow& window) {
             assert(game_over_menu == nullptr);
             game_over_menu =
                 std::make_unique<GameOverMenu>(window, is_player_won);
-            break;
-        case AppState::Exit:
-            window.close();
             break;
         default:
             break;
