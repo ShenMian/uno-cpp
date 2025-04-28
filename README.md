@@ -29,5 +29,8 @@ doxygen
 
 ## Assets
 
-- **Pixel UNO Cards**: <https://ivoryred.itch.io/pixel-uno-cards>.
-- **Casino Audio**: <https://www.kenney.nl/assets/casino-audio>.
+- [Pixel UNO Cards](https://ivoryred.itch.io/pixel-uno-cards)
+    - **Author**: IvoryRed.
+- [Casino Audio](https://www.kenney.nl/assets/casino-audio)
+    - **Author**: Kenney.
+    - **License**: CC0.
