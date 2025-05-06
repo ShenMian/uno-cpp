@@ -10,15 +10,13 @@ class Audio {
 
     void play_random_place_sound() {
         std::uniform_int_distribution<size_t> dist(0, 3);
-        std::mt19937 rng(std::random_device {}());
-        const auto index = dist(rng);
+        const auto index = dist(rng_);
         place_sounds_[index].play();
     }
 
     void play_random_slide_sound() {
         std::uniform_int_distribution<size_t> dist(0, 7);
-        std::mt19937 rng(std::random_device {}());
-        const auto index = dist(rng);
+        const auto index = dist(rng_);
         slide_sounds_[index].play();
     }
 
@@ -29,6 +27,7 @@ class Audio {
 
   private:
     Audio() :
+        rng_(std::random_device {}()),
         place_sounds_ {
             sf::Sound(place_buffers_[0]),
             sf::Sound(place_buffers_[1]),
@@ -62,6 +61,8 @@ class Audio {
             slide_sounds_[i].setVolume(70);
         }
     }
+
+    std::mt19937 rng_;
 
     sf::SoundBuffer place_buffers_[4];
     sf::Sound place_sounds_[4];
