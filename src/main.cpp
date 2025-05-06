@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <atomic>
 #include <cassert>
-#include <cstdlib>
 #include <memory>
 #include <thread>
 
@@ -41,9 +40,11 @@ int main() {
                 app_state = AppState::Exit;
             }
             if (auto resized = event->getIf<sf::Event::Resized>()) {
-                window.setView(sf::View(
-                    sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
-                ));
+                window.setView(
+                    sf::View(
+                        sf::FloatRect({0.0f, 0.0f}, sf::Vector2f(resized->size))
+                    )
+                );
                 resize_background(background_sprite, window);
             }
         }
